@@ -9,10 +9,10 @@ ACCESS_TOKEN = "EAAEtsX9w5Q0BAHz42VnrkeSNajWpvJjc8ONCs4plPKlBzoafvDTxTEkVY1gGmTx
 
 @app.route("/",methods=["GET"])
 def handle_verification():
-	if request.args["hub.verify_token"] == os.environ["test_for_verify"]:
+	#if request.args["hub.verify_token"] == os.environ["test_for_verify"]:
 		return request.args["hub.challenge"]
-	else:
-		return "Wrong Verify Token"
+	#else:
+		#return "Wrong Verify Token"
 
 
 def reply(user_id,message):
