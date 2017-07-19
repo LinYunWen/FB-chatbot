@@ -1,5 +1,6 @@
 from flask import Flask, request
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -8,7 +9,10 @@ ACCESS_TOKEN = "EAAEtsX9w5Q0BAHz42VnrkeSNajWpvJjc8ONCs4plPKlBzoafvDTxTEkVY1gGmTx
 
 @app.route("/",methods=["GET"])
 def handle_verification():
-	return request.args['hub.challenge']
+	if request.args["hub.verify_token"] == os.environ["test_for_verify"]:
+		return request.args["hub.challenge"]
+	else:
+		return "Wrong Verify Token"
 
 
 def reply(user_id,message):
@@ -17,17 +21,17 @@ def reply(user_id,message):
 		"message": {"text": message}
 	}
 	response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
-	print("response: ",response.content)
+	#print("response: ",response.content)
 
 
 @app.route("/",methods=["POST"])
 def handle_incoming_message():
 	data = request.json
 	sender = data["entry"][0]["messaging"][0]["sender"]["id"]
-	message = data["entry"][0]["messaging"][0]["message"]["text"]
+	text = data["entry"][0]["messaging"][0]["message"]["text"]
 
-	print("message: ",message)
-	reply(sender,message)
+	print("message: ",text)
+	reply(sender,text)
 
 	return "ok"
 
