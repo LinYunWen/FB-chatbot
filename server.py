@@ -26,6 +26,9 @@ def handle_verification():
 	else:
 		return "Wrong Verify Token"
 
+def get_access_token():
+	return 0
+
 #get web page
 def get_web_page(url):
 	response = requests.get(url)
