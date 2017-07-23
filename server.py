@@ -433,7 +433,7 @@ def find_info(token, mode):
 
 			songs_data = [get_artist_info(artist_json)]
 			song_json = artist_songs(artist_id,"TW")
-			if hasattr(sing_json,"error"):
+			if hasattr(song_json,"error"):
 				return {"mode":NO_RESULT}
 
 			for i in range(0,3):
