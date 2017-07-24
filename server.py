@@ -246,10 +246,10 @@ def artist_songs(id, territory):
 	headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
 	return requests.get("https://api.kkbox.com/v1.1/artists/" + id + "/top-tracks?territory=" + territory + "&limit=5", headers=headers).json()
 
-def get_artist_info(json):
-	name = json["artists"]["data"][0]["name"]
-	url = json["artists"]["data"][0]["url"]
-	image_url = json["artists"]["data"][0]["images"][1]["url"]
+def get_artist_info(json,index):
+	name = json["artists"]["data"][index]["name"]
+	url = json["artists"]["data"][index]["url"]
+	image_url = json["artists"]["data"][index]["images"][1]["url"]
 	return {"name":name, "url":url, "image_url":image_url}
 
 def matching_result(input, name):
@@ -289,7 +289,7 @@ def produce_elements(info):
 								"webview_height_ratio":"full"
 							}
 						}]
-			for i in range(1,4):
+			for i in range(1,info["num"]+1):
 				elements.append({
 									"title":info["songs_data"][i]["name"],
 									"image_url":info["songs_data"][i]["widget_image_url"],
@@ -395,8 +395,9 @@ def find_info(token, mode):
 
 	elif mode == ALBUM:
 		album_json = search(token,"album","TW")
-		if result_num(album_json):
-			if matching_result(token,album_json["albums"]["data"][0]["name"]):
+		num = result_num(album_json)
+		if num > 0:
+			if matching_result(token,album_json["albums"]["data"][0]["name"]) or num == 1:
 				album_id = get_album_id(album_json)
 				print("id: ",album_id)
 				widget_album_url = get_widget_album_url(album_id)
@@ -405,7 +406,7 @@ def find_info(token, mode):
 				#return {"mode":ALBUM, "widget_song_url":widget_album_url, "web_title":web_title, "widget_image_url":widget_image_url}
 			else:
 				albums_data = []
-				for i in range(0,4):
+				for i in range(0,num):
 					album_id = album_json["albums"]["data"][i]["id"]
 					widget_album_url = get_widget_album_url(album_id)
 					albums_data.append({"widget_song_url":widget_album_url, "name":get_widget_name(album_json,mode,i), "widget_image_url":get_widget_image(album_json,mode,i), "subtitle":album_json["albums"]["data"][i]["artist"]["name"]})
@@ -436,22 +437,36 @@ def find_info(token, mode):
 			return {"mode":NO_RESULT}
 	elif mode == ARTIST:
 		artist_json = search(token,"artist","TW")
-		if numresult(artist_json):
-			artist_id = get_artist_id(artist_json)
-			print("id: ",artist_id)
+		artist_num = result_num(artist_json)
+		if artist_num > 0:
+			if matching_result(token,artist_json["artists"]["data"][0]["name"]) or artist_num == 1:
+				artist_id = get_artist_id(artist_json)
+				print("id: ",artist_id)
 
-			songs_data = [get_artist_info(artist_json)]
-			song_json = artist_songs(artist_id,"TW")
-			#print(song_json)
-			if "error" in song_json:
-				return {"mode":NO_RESULT}
+				songs_data = [get_artist_info(artist_json,0)]
+				song_json = artist_songs(artist_id,"TW")
+				#print(song_json)
+				if "error" in song_json:
+					return {"mode":NO_RESULT}
 
-			for i in range(0,3):
-				song_id = song_json["data"][i]["id"]
-				widget_song_url = get_widget_song_url(song_id)
-				songs_data.append({"widget_song_url":widget_song_url, "name":get_widget_name(song_json["data"][i],mode,0), "widget_image_url":get_widget_image(song_json,mode,i)})
+				song_num =  result_num(song_json)
+				if song_num == 4:
+					song_num = 3
 
-			return {"mode":ARTIST, "response_type":LIST, "top_element_style":"large", "songs_data":songs_data}
+				for i in range(0,song_num):
+					song_id = song_json["data"][i]["id"]
+					widget_song_url = get_widget_song_url(song_id)
+					songs_data.append({"widget_song_url":widget_song_url, "name":get_widget_name(song_json["data"][i],mode,0), "widget_image_url":get_widget_image(song_json,mode,i)})
+
+				return {"mode":ARTIST, "num":song_num, "response_type":LIST, "top_element_style":"large", "songs_data":songs_data}
+			else:
+				artists_data = []
+				for i in range(0,artist_num):
+					artist_id = artist_json["artists"]["data"][i]["id"]
+					artist_info = get_artist_info(artist_json,i)
+					artists_data.append({"widget_song_url":artist_info["url"], "name":artist_info["name"], "widget_image_url":artist_info["image_url"], "subtitle":artist_info["name"]})
+
+				return {"mode":ARTIST, "num":artist_num, "response_type":LIST, "top_element_style":"compact", "songs_data":artists_data}
 		else:
 			return {"mode":NO_RESULT}
 
