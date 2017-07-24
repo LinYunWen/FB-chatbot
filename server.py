@@ -60,7 +60,13 @@ def reply_text(user_id, message):
 		"message": {"text": message}
 	}
 	response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
-
+def reply_greeting_message():
+	data = {
+		"setting_type":"greeting",
+		"greeting":{
+			"text":"請輸入\"/歌曲歌曲\"\n或輸入\"#專輯名稱\"\n或\"輸入$歌單名稱\"\n或\"輸入@歌手名稱\""
+		}
+	}
 def reply_image_url(user_id, image_url):
 	data = {
 		"recipient":{
@@ -525,6 +531,7 @@ def reply(user_id, info):
 	
 @app.route("/",methods=["POST"])
 def handle_incoming_message():
+	reply_greeting_message()
 	data = request.json
 	if "attachments" in data["entry"][0]["messaging"][0]["message"]:
 		response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
