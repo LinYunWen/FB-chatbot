@@ -262,7 +262,7 @@ def produce_elements(info):
 	elements = []
 	if info["mode"] == SONG:
 		webview_type = "compact"
-	elif info["mode"] == ALBUM or info["mode"] == PLAYLIST:
+	elif info["mode"] == ALBUM or info["mode"] == PLAYLIST or info["mode"] == ARTIST:
 		webview_type = "tall"
 
 	if info["response_type"] == SINGLE:
