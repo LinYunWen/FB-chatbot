@@ -526,6 +526,10 @@ def reply(user_id, info):
 @app.route("/",methods=["POST"])
 def handle_incoming_message():
 	data = request.json
+	if "attachments" in data["message"]:
+		response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
+		return "ok"
+
 	sender = data["entry"][0]["messaging"][0]["sender"]["id"]
 	text = data["entry"][0]["messaging"][0]["message"]["text"]
 
