@@ -376,7 +376,7 @@ def find_info(token, mode):
 		song_json = search(token,"track","TW")
 		num = result_num(song_json)
 		if num > 0:
-			if matching_result(token,song_json["tracks"]["data"][0]["name"]):
+			if matching_result(token,song_json["tracks"]["data"][0]["name"]) or num == 1:
 				song_id = get_song_id(song_json)
 				print("id: ", song_id)
 				widget_song_url = get_widget_song_url(song_id)
@@ -417,7 +417,7 @@ def find_info(token, mode):
 		playlist_json = search(token,"playlist","TW")
 		num = result_num(playlist_json)
 		if num > 0:
-			if matching_result(token,playlist_json["playlists"]["data"][0]["title"]):
+			if matching_result(token,playlist_json["playlists"]["data"][0]["title"]) or num == 1:
 				playlist_id = get_playlist_id(playlist_json)
 				print("id: ",playlist_id)
 				widget_playlist_url = get_widget_playlist_url(playlist_id)
