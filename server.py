@@ -411,7 +411,7 @@ def find_info(token, mode):
 					widget_album_url = get_widget_album_url(album_id)
 					albums_data.append({"widget_song_url":widget_album_url, "name":get_widget_name(album_json,mode,i), "widget_image_url":get_widget_image(album_json,mode,i), "subtitle":album_json["albums"]["data"][i]["artist"]["name"]})
 
-				return {"mode":ALBUM, "response_type":LIST, "top_element_style":"compact", "songs_data":albums_data}
+				return {"mode":ALBUM, "num":num, "response_type":LIST, "top_element_style":"compact", "songs_data":albums_data}
 		else:
 			return {"mode":NO_RESULT}
 	elif mode == PLAYLIST:
