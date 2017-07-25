@@ -64,7 +64,7 @@ def reply_greeting_message():
 	data = {
 		"setting_type":"greeting",
 		"greeting":{
-			"text":"請輸入\"/歌曲歌曲\"\n或輸入\"#專輯名稱\"\n或\"輸入$歌單名稱\"\n或\"輸入@歌手名稱\""
+			"text":"請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\""
 		}
 	}
 def reply_image_url(user_id, image_url):
@@ -89,7 +89,6 @@ def reply_image_url(user_id, image_url):
 
 def reply_generic_template(user_id, info):
 	element = produce_elements(info)
-
 	data = {
 		"recipient":{
 			"id":user_id
@@ -123,14 +122,14 @@ def reply_list_template(user_id, info):
 				"type":"template",
 				"payload":{
 					"template_type":"list",
-					"sharable":True,
 					"top_element_style":info["top_element_style"],
 					"elements":elements,
-					"buttons":buttons		
+					"buttons":buttons
 				}
 			}
 		}
 	}
+	
 	response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
 	print(response.content)
 
@@ -219,7 +218,7 @@ def set_sender_action(user_id, action):
 def handle_error_request(user_id, error_type):
 	if error_type == BAD_INPUT:
 		reply_text(user_id,"未設定之指令")
-		reply_text(user_id,"請輸入\"/歌曲歌曲\"\n或輸入\"#專輯名稱\"\n或\"輸入$歌單名稱\"\n或\"輸入@歌手名稱\"")
+		reply_text(user_id,"請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"")
 	elif error_type == NO_RESULT:
 		reply_text(user_id,"抱歉～沒有尋找到任何資料")
 
@@ -246,18 +245,36 @@ def artist_songs(id, territory):
 	headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
 	return requests.get("https://api.kkbox.com/v1.1/artists/" + id + "/top-tracks?territory=" + territory + "&limit=5", headers=headers).json()
 
-def get_artist_info(json,index):
+def get_artist_info(json, index):
 	name = json["artists"]["data"][index]["name"]
 	url = json["artists"]["data"][index]["url"]
 	image_url = json["artists"]["data"][index]["images"][1]["url"]
 	return {"name":name, "url":url, "image_url":image_url}
+def get_artist_name(mode, json):
+	if mode == SONG:
+		return json["tracks"]["data"][0]["album"]["artist"]["name"]
+	elif mode == ALBUM:
+		return json["albums"]["data"][0]["artist"]["name"]
+	return "error"
+def get_alblum_name(mode, json):
+	if mode == SONG:
+		return json["tracks"]["data"][0]["album"]["name"]
+	elif mode == ALBUM:
+		return json["albums"]["data"][0]["name"]
+	return "error"
 
 def matching_result(input, name):
-	temp = name.split(" ")
-	if input == temp[0]:
-		return True
+	if name.find('(') >= 0:
+		temp = name.lower().split("(")
+		if input == temp[0][0:len(temp[0])-1]:
+			return True
+		else:
+			return False
 	else:
-		return False
+		if input == name.lower():
+			return True
+		else:
+			return False
 def produce_elements(info):
 	elements = []
 	if info["mode"] == SONG:
@@ -269,6 +286,7 @@ def produce_elements(info):
 		elements.append({
 							"title":info["name"],
 							"image_url":info["widget_image_url"],
+							"subtitle":info["subtitle"],
 							"default_action":{
 								"type":"web_url",
 								"url":info["widget_song_url"],
@@ -292,6 +310,7 @@ def produce_elements(info):
 			for i in range(1,info["num"]+1):
 				elements.append({
 									"title":info["songs_data"][i]["name"],
+									"subtitle":info["songs_data"][i]["subtitle"],
 									"image_url":info["songs_data"][i]["widget_image_url"],
 									"default_action":{
 										"type":"web_url",
@@ -336,7 +355,7 @@ def produce_buttons(info):
 		else:
 			buttons = [{
 							"type":"web_url",
-							"url":"https://www.kkbox.com/tw/tc/index.html",
+							"url":"https://www.kkbox.com/tw/tc/search.php?word=" + info["token"],
 							"title":"More"
 						}]
 			return buttons
@@ -348,6 +367,28 @@ def return_mode(input):
 		return PLAYLIST
 	else:
 		return BAD_INPUT
+def set_start_button():
+	data = {
+		"get_started":{
+			"payload":"first_hand_shack"
+		}
+	}
+	response = requests.post("https://graph.facebook.com/v2.6/me/messenger_profile?access_token=" + ACCESS_TOKEN, json=data)
+	
+def modify_image_size(url,size):
+	index = url.rfind("/")
+	#print(index)
+	if index > 0:
+		temp = url[index+1:]
+		want_size = str(size) + "x" + str(size) + ".jpg"
+		#print(size)
+		if temp != want_size:
+			#print(url[0:index+1] + "300x300.jpg")
+			return url[0:index+1] + want_size
+		else:
+			return url
+	else:
+		return url
 
 def parse_request(message):
 	song_index = message.find("聽")
@@ -380,16 +421,37 @@ def find_info(token, mode):
 				song_id = get_song_id(song_json)
 				print("id: ", song_id)
 				widget_song_url = get_widget_song_url(song_id)
-				return {"mode":SONG, "response_type":SINGLE, "widget_song_url":widget_song_url, "name":get_widget_name(song_json,mode,0), "widget_image_url":get_widget_image(song_json,mode,0), "web_url":get_web_url(song_json,mode)}
+
+				return {
+					"mode":SONG,
+					"response_type":SINGLE,
+					"subtitle":get_alblum_name(mode,song_json) + "   " + get_artist_name(mode,song_json),
+					"widget_song_url":widget_song_url,
+					"name":get_widget_name(song_json,mode,0),
+					"widget_image_url":modify_image_size(get_widget_image(song_json,mode,0),400),
+					"web_url":get_web_url(song_json,mode)
+				}
 				#return {"mode":SONG, "widget_song_url":widget_song_url, "web_title":web_title, "widget_image_url":widget_image_url}
 			else:
 				songs_data = []
 				for i in range(0,num):
 					song_id = song_json["tracks"]["data"][i]["id"]
 					widget_song_url = get_widget_song_url(song_id)
-					songs_data.append({"widget_song_url":widget_song_url, "name":get_widget_name(song_json,mode,i), "widget_image_url":get_widget_image(song_json,mode,i), "subtitle":song_json["tracks"]["data"][i]["album"]["artist"]["name"]})
+					songs_data.append({
+						"widget_song_url":widget_song_url,
+						"name":get_widget_name(song_json,mode,i),
+						"widget_image_url":get_widget_image(song_json,mode,i),
+						"subtitle":song_json["tracks"]["data"][i]["album"]["artist"]["name"]
+					})
 
-				return {"mode":SONG, "num":num, "response_type":LIST, "top_element_style":"compact", "songs_data":songs_data}
+				return {
+					"mode":SONG,
+					"num":num,
+					"token":token,
+					"response_type":LIST,
+					"top_element_style":"compact",
+					"songs_data":songs_data
+				}
 		elif num == 0:
 			return {"mode":NO_RESULT}
 
@@ -402,16 +464,36 @@ def find_info(token, mode):
 				print("id: ",album_id)
 				widget_album_url = get_widget_album_url(album_id)
 
-				return {"mode":ALBUM, "response_type":SINGLE, "widget_song_url":widget_album_url, "name":get_widget_name(album_json,mode,0), "widget_image_url":get_widget_image(album_json,mode,0), "web_url":get_web_url(album_json,mode)}
+				return {
+					"mode":ALBUM,
+					"response_type":SINGLE,
+					"subtitle":get_artist_name(mode,album_json),
+					"widget_song_url":widget_album_url,
+					"name":get_widget_name(album_json,mode,0),
+					"widget_image_url":modify_image_size(get_widget_image(album_json,mode,0),400),
+					"web_url":get_web_url(album_json,mode)
+				}
 				#return {"mode":ALBUM, "widget_song_url":widget_album_url, "web_title":web_title, "widget_image_url":widget_image_url}
 			else:
 				albums_data = []
 				for i in range(0,num):
 					album_id = album_json["albums"]["data"][i]["id"]
 					widget_album_url = get_widget_album_url(album_id)
-					albums_data.append({"widget_song_url":widget_album_url, "name":get_widget_name(album_json,mode,i), "widget_image_url":get_widget_image(album_json,mode,i), "subtitle":album_json["albums"]["data"][i]["artist"]["name"]})
+					albums_data.append({
+						"widget_song_url":widget_album_url,
+						"name":get_widget_name(album_json,mode,i),
+						"widget_image_url":get_widget_image(album_json,mode,i),
+						"subtitle":album_json["albums"]["data"][i]["artist"]["name"]
+					})
 
-				return {"mode":ALBUM, "num":num, "response_type":LIST, "top_element_style":"compact", "songs_data":albums_data}
+				return {
+					"mode":ALBUM,
+					"num":num,
+					"token":token,
+					"response_type":LIST,
+					"top_element_style":"compact",
+					"songs_data":albums_data
+				}
 		else:
 			return {"mode":NO_RESULT}
 	elif mode == PLAYLIST:
@@ -423,16 +505,36 @@ def find_info(token, mode):
 				print("id: ",playlist_id)
 				widget_playlist_url = get_widget_playlist_url(playlist_id)
 
-				return {"mode":PLAYLIST, "response_type":SINGLE, "widget_song_url":widget_playlist_url, "name":get_widget_name(playlist_json,mode,0), "widget_image_url":get_widget_image(playlist_json,mode,0), "web_url": get_web_url(playlist_json,mode)}
+				return {
+					"mode":PLAYLIST,
+					"response_type":SINGLE,
+					"subtitle":playlist_json["playlists"]["data"][0]["description"],
+					"widget_song_url":widget_playlist_url,
+					"name":get_widget_name(playlist_json,mode,0),
+					"widget_image_url":modify_image_size(get_widget_image(playlist_json,mode,0),400),
+					"web_url": get_web_url(playlist_json,mode)
+				}
 				#return {"mode":PLAYLIST, "widget_song_url":widget_playlist_url, "web_title":web_title, "widget_image_url":widget_image_url}
 			else:
 				playlists_data = []
 				for i in range(0,num):
 					playlist_id = playlist_json["playlists"]["data"][i]["id"]
 					widget_playlist_url = get_widget_playlist_url(playlist_id)
-					playlists_data.append({"widget_song_url":widget_playlist_url, "name":get_widget_name(playlist_json,mode,i), "widget_image_url":get_widget_image(playlist_json,mode,i), "subtitle":playlist_json["playlists"]["data"][i]["description"]})
+					playlists_data.append({
+						"widget_song_url":widget_playlist_url,
+						"name":get_widget_name(playlist_json,mode,i),
+						"widget_image_url":get_widget_image(playlist_json,mode,i),
+						"subtitle":playlist_json["playlists"]["data"][i]["description"]
+					})
 
-				return {"mode":PLAYLIST, "num":num, "response_type":LIST, "top_element_style":"compact", "songs_data":playlists_data}
+				return {
+					"mode":PLAYLIST,
+					"num":num,
+					"token":token,
+					"response_type":LIST,
+					"top_element_style":"compact",
+					"songs_data":playlists_data
+				}
 		else:
 			return {"mode":NO_RESULT}
 	elif mode == ARTIST:
@@ -456,17 +558,40 @@ def find_info(token, mode):
 				for i in range(0,song_num):
 					song_id = song_json["data"][i]["id"]
 					widget_song_url = get_widget_song_url(song_id)
-					songs_data.append({"widget_song_url":widget_song_url, "name":get_widget_name(song_json["data"][i],mode,0), "widget_image_url":get_widget_image(song_json,mode,i)})
+					songs_data.append({
+						"widget_song_url":widget_song_url,
+						"name":get_widget_name(song_json["data"][i],mode,0),
+						"subtitle":song_json["data"][i]["album"]["name"],
+						"widget_image_url":get_widget_image(song_json,mode,i)
+					})
 
-				return {"mode":ARTIST, "num":song_num, "response_type":LIST, "top_element_style":"large", "songs_data":songs_data}
+				return {
+					"mode":ARTIST,
+					"num":song_num,
+					"response_type":LIST,
+					"top_element_style":"large",
+					"songs_data":songs_data
+				}
 			else:
 				artists_data = []
 				for i in range(0,artist_num):
 					artist_id = artist_json["artists"]["data"][i]["id"]
 					artist_info = get_artist_info(artist_json,i)
-					artists_data.append({"widget_song_url":artist_info["url"], "name":artist_info["name"], "widget_image_url":artist_info["image_url"], "subtitle":artist_info["name"]})
+					artists_data.append({
+						"widget_song_url":artist_info["url"],
+						"name":artist_info["name"],
+						"widget_image_url":artist_info["image_url"],
+						"subtitle":artist_info["name"]
+					})
 
-				return {"mode":ARTIST, "num":artist_num, "response_type":LIST, "top_element_style":"compact", "songs_data":artists_data}
+				return {
+					"mode":ARTIST,
+					"num":artist_num,
+					"token":token,
+					"response_type":LIST,
+					"top_element_style":"compact",
+					"songs_data":artists_data
+				}
 		else:
 			return {"mode":NO_RESULT}
 
@@ -544,21 +669,30 @@ def reply(user_id, info):
 			reply_generic_template(user_id, info)
 		elif info["response_type"] == LIST:
 			if info["top_element_style"] == "compact":
-				reply_text(user_id, "抱歉~沒有找到完全相同者\n請問是以下選項嗎？")
+				if info["mode"] == SONG or info["mode"] == ARTIST :
+					reply_text(user_id, "抱歉~沒有找到完全相同者\n請問是以下選項嗎？")
 			reply_list_template(user_id, info)
 	
 @app.route("/",methods=["POST"])
 def handle_incoming_message():
-	reply_greeting_message()
+	
 	data = request.json
+	sender = data["entry"][0]["messaging"][0]["sender"]["id"]
+	
+	#handle first conversation
+	if "postback" in data["entry"][0]["messaging"][0]:
+		if data["entry"][0]["messaging"][0]["postback"]["payload"] == "first_hand_shack":
+			reply_text(sender,"請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"")
+			return "ok"
+
+	#request with not pure text message
 	if "attachments" in data["entry"][0]["messaging"][0]["message"]:
 		response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
 		return "ok"
 
-	sender = data["entry"][0]["messaging"][0]["sender"]["id"]
 	text = data["entry"][0]["messaging"][0]["message"]["text"]
-
 	print("message: ",text)
+	
 	request_token = parse_request(text)
 	if request_token["mode"]<0:
 		handle_error_request(sender,request_token["mode"])
@@ -570,4 +704,5 @@ def handle_incoming_message():
 
 
 if __name__ == "__main__":
+	set_start_button()
 	app.run(debug=True)
