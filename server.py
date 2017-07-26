@@ -490,7 +490,7 @@ def _get_track(msg):
 
     # If result is empty, fast fail
     if not n:
-        return
+        return {'mode': NO_RESULT}
 
     # Check if we match the track
     for track in tracks['track']['data']:
