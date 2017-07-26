@@ -780,7 +780,10 @@ def reply(user_id, info):
 
     # send attachment
     # bot.send_attachment_url(user_id,"template","https://widget.kkbox.com/v1/?id=8sD5pE4dV0Zqmmler6&type=song")
+    
+    print(info)
     if info["mode"] not in InputType:
+        return 'ok'
         handle_error_request(user_id, info["mode"])
     else:
         # print(info)
