@@ -469,6 +469,15 @@ def get_info(msg, info_type):
         return ''
     return info
 
+def _get_album(msg):
+    pass
+
+def _get_playlist(msg):
+    pass
+
+def _get_artist(msg):
+    pass
+
 def _get_track(msg):
     tracks = search(msg, 'track', 'TW')
     n = result_num(tracks)
