@@ -821,7 +821,8 @@ def handle_incoming_message():
         handle_error_request(sender, request_token["mode"])
     else:
         info = get_info(request_token["token"], request_token["mode"])
-        reply(sender, info)
+        print(info)
+        # reply(sender, info)
 
     return "ok"
 
