@@ -798,7 +798,7 @@ def handle_incoming_message():
     print("message: ", text)
 
     request_token = parse_request(text)
-    if request_token["mode"] < 0:
+    if request_token["mode"] not in InputType:
         handle_error_request(sender, request_token["mode"])
     else:
         info = get_info(request_token["token"], request_token["mode"])
