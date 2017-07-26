@@ -401,10 +401,12 @@ def parse_request(message):
 		return {"mode":PLAYLIST, "token":message[1:]}
 	elif message[0] == '@':
 		return {"mode":ARTIST, "token":message[1:]}
+	"""
 	elif message[0] == '?':
 		token = message.split(" ")
 		token[0] = return_mode(token[0])
 		return {"mode":INQUERY, "token":token}
+	"""
 
 	if song_index<0:
 		return {"mode":BAD_INPUT}
