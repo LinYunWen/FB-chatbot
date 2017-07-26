@@ -458,7 +458,7 @@ def parse_request(message):
     if song_index < 0:
         return {"mode": BAD_INPUT}
     else:
-        return {"mode": SONG, "token": message[song_index:]}
+        return {"mode": InputType.SONG, "token": message[song_index:]}
 
 
 def get_info(msg, info_type):
@@ -817,6 +817,7 @@ def handle_incoming_message():
     print("message: ", text)
 
     request_token = parse_request(text)
+    print(request_token)
     if request_token["mode"] not in InputType:
         handle_error_request(sender, request_token["mode"])
     else:
