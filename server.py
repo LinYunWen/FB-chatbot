@@ -2,7 +2,7 @@
 
 import enum
 import os
-import reqeusts
+import requests
 from flask import Flask, request
 from pymessenger.bot import Bot
 from bs4 import BeautifulSoup
