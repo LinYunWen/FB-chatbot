@@ -782,18 +782,19 @@ def reply(user_id, info):
     # bot.send_attachment_url(user_id,"template","https://widget.kkbox.com/v1/?id=8sD5pE4dV0Zqmmler6&type=song")
     
     print(info)
-    if info["mode"] not in InputType:
-        return 'ok'
-        handle_error_request(user_id, info["mode"])
-    else:
-        # print(info)
-        if info["response_type"] == SINGLE:
-            reply_generic_template(user_id, info)
-        elif info["response_type"] == LIST:
-            if info["top_element_style"] == "compact":
-                if info["mode"] == SONG or info["mode"] == ARTIST:
-                    reply_text(user_id, "抱歉~沒有找到完全相同者\n請問是以下選項嗎？")
-            reply_list_template(user_id, info)
+    # if info["mode"] not in InputType:
+    #     return 'ok'
+    #     handle_error_request(user_id, info["mode"])
+    # else:
+    #     # print(info)
+    if info["response_type"] == SINGLE:
+        reply_generic_template(user_id, info)
+    elif info["response_type"] == LIST:
+        if info["top_element_style"] == "compact":
+            if info["mode"] == SONG or info["mode"] == ARTIST:
+                reply_text(user_id, "抱歉~沒有找到完全相同者\n請問是以下選項嗎？")
+        reply_list_template(user_id, info)
+    return 'ok'
 
 
 @app.route("/", methods=["POST"])
