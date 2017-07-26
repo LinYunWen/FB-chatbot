@@ -494,7 +494,8 @@ def _get_track(msg):
 
     # Check if we match the track
     for track in tracks['tracks']['data']:
-        if msg in track:
+        if msg.lower() in track['name'].lower():
+            print('is a match!')
             track_id = track['id']
             track_widget_url = get_widget_song_url(track_id)
 
@@ -503,14 +504,14 @@ def _get_track(msg):
                 'mode': InputType.SONG,
                 'response_type': SINGLE,
                 'name': track['name'],
-                'subtitle': '{album} {artist}'.format(album=track['album']['name'], artist=track['artist']['name']),
+                'subtitle': '{album} {artist}'.format(album=track['album']['name'], artist=track['album']['artist']['name']),
                 'widget_song_url': track_widget_url,
                 'widget_image_url': track['album']['images'][-1]['url'],
                 'web_url': track['url']
             }
 
     # Return items when length > 0
-    if tracks['track']['data']:
+    if tracks['tracks']['data']:
         pass
 
     return {'mode': NO_RESULT}
