@@ -493,7 +493,7 @@ def _get_track(msg):
         return {'mode': NO_RESULT}
 
     # Check if we match the track
-    for track in tracks['track']['data']:
+    for track in tracks['tracks']['data']:
         if msg in track:
             track_id = track['id']
             track_widget_url = get_widget_song_url(track_id)
@@ -817,13 +817,11 @@ def handle_incoming_message():
     print("message: ", text)
 
     request_token = parse_request(text)
-    print(request_token)
     if request_token["mode"] not in InputType:
         handle_error_request(sender, request_token["mode"])
     else:
         info = get_info(request_token["token"], request_token["mode"])
-        print(info)
-        # reply(sender, info)
+        reply(sender, info)
 
     return "ok"
 
