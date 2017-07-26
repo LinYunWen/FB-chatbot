@@ -26,6 +26,12 @@ class InputType(enum.Enum):
     INQUERY = 4
 
 
+SONG = 0
+ALBUM = 1
+PLAYLIST = 2
+ARTIST = 3
+INQUERY = 4
+
 # response type
 SINGLE = 0
 LIST = 1
@@ -312,9 +318,9 @@ def matching_result(input, name):
 
 def produce_elements(info):
     elements = []
-    if info["mode"] == SONG:
+    if info["mode"] == InputType.SONG:
         webview_type = "compact"
-    elif info["mode"] == ALBUM or info["mode"] == PLAYLIST or info["mode"] == ARTIST:
+    elif info["mode"] == InputType.ALBUM or info["mode"] == PLAYLIST or info["mode"] == ARTIST:
         webview_type = "tall"
 
     if info["response_type"] == SINGLE:
@@ -774,7 +780,7 @@ def reply(user_id, info):
 
     # send attachment
     # bot.send_attachment_url(user_id,"template","https://widget.kkbox.com/v1/?id=8sD5pE4dV0Zqmmler6&type=song")
-    if info["mode"] < 0:
+    if info["mode"] not in InputType:
         handle_error_request(user_id, info["mode"])
     else:
         # print(info)
