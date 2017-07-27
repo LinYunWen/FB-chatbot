@@ -434,105 +434,87 @@ def get_info(msg, info_type):
         return ''
     return info
 
-def _get_album(msg):
-    albums = search(msg, 'album', 'TW')
-    num = get_summary_total(albums)
-    data = []
+def _get_reply(msg, type):
+    search_result = search(msg, type.value, 'TW')
+    total = get_summary_total(search_result)
 
-    # If result is empty, fast fail
-    if not num:
+    if not total:
         return {'mode': ErrorType.NO_RESULT}
 
-    # Check if we match the album
-    for album in albums['albums']['data']:
-        #if not is_match:
-        if matching_result(msg, album['name']):
-            print('matching!')
-        
-        album_id = album['id']
-        album_widget_url = get_widget_url(album_id, 'album')
+    data = []
+    for d in search_result[type.value + 's']['data']:
+        title = d['name'] if 'name' in d else d['title']
+
+        # XXX: WTF? what does this if stmt do?
+        if matching_result(msg, title):
+            pass
+        pk = d['id']
+        widget_url = get_widget_url(pk, type.value)
 
         data.append({
-            'title': album['name'],
-            'subtitle': '{artist}'.format(artist=album['artist']['name']),
-            'widget_song_url': album_widget_url,
-            'widget_image_url': album['images'][-1]['url'],
-            'web_url': album['url']
+            'title': title,
+            'subtitle': d['artist']['name'] if 'artist' in d else title,
+            'wdiget_song_url': widget_url,
+            'widget_image_url': d['images'][-1]['url'] if 'images' in d else d['album']['images'][-1]['url'],
+            'web_url': d['url']
         })
 
     return {
-        'mode': InputType.ALBUM,
-        'response_type': return_response_type,
-        'top_element_style': "compact",
+        'mode': type,
+        'response_type': ResponseType.SINGLE if len(data) == 1 else ResponseType.LIST,
+        'top_element_style': 'compact',
         'data': data,
-        'token': msg
+        'token': msg,
     }
-        
+
 
     
 
+def _get_album(msg):
+    return _get_reply(msg, InputType.ALBUM)
+    
+
 def _get_playlist(msg):
-    albums = search(msg, 'album', 'TW')
-    num = get_summary_total(albums)
+    return _get_reply(msg, InputType.PLAYLIST)
 
-    # If result is empty, fast fail
-    if not num:
-        return {'mode': ErrorType.NO_RESULT}
-
-    # Check if we match the album
-    for album in albums['albums']['data']:
-        if msg.lower() in album['name'].lower():
-            print("matching!")
-            album_id = album["id"]
-            album_widget_url = get_widget_url(album_id, "album")
-
-            return {
-                'mode': InputType.ALBUM,
-                'response_type': ResponseType.SINGLE,
-                'title': album['name'],
-                'subtitle': '{artist}'.format(artist=album['artist']['name']),
-                'widget_song_url': album_widget_url,
-                'widget_image_url': album['images'][-1]['url'],
-                'web_url': album['url']
-            }
-
-    return {"mode": ErrorType.NO_RESULT}
 
 def _get_artist(msg):
-    pass
+    return _get_reply(msg, InputType.ARTIST)
+
 
 def _get_track(msg):
-    tracks = search(msg, 'track', 'TW')
-    num = get_summary_total(tracks)
+    return _get_reply(msg, InputType.TRACK)
 
-    # If result is empty, fast fail
-    if not num:
-        return {'mode': ErrorType.NO_RESULT}
+    # tracks = search(msg, 'track', 'TW')
+    # num = get_summary_total(tracks)
 
-    # Check if we match the track
-    for track in tracks['tracks']['data']:
-        #if msg.lower() in track['name'].lower():
-        if matching_result(msg, track["name"]):
-            print('is a match!')
-            track_id = track['id']
-            track_widget_url = get_widget_url(track_id, "song")
+    # # If result is empty, fast fail
+    # if not num:
+    #     return {'mode': ErrorType.NO_RESULT}
 
-            return {
-                'mode': InputType.TRACK,
-                'response_type': ResponseType.SINGLE,
-                'title': track['name'],
-                'subtitle': '{album} {artist}'.format(album=track['album']['name'], artist=track['album']['artist']['name']),
-                'widget_song_url': track_widget_url,
-                'widget_image_url': track['album']['images'][-1]['url'],
-                'web_url': track['url']
-            }
+    # # Check if we match the track
+    # for track in tracks['tracks']['data']:
+    #     #if msg.lower() in track['name'].lower():
+    #     if matching_result(msg, track["name"]):
+    #         track_id = track['id']
+    #         track_widget_url = get_widget_url(track_id, "song")
+
+    #         return {
+    #             'mode': InputType.TRACK,
+    #             'response_type': ResponseType.SINGLE,
+    #             'title': track['name'],
+    #             'subtitle': '{album} {artist}'.format(album=track['album']['name'], artist=track['album']['artist']['name']),
+    #             'widget_song_url': track_widget_url,
+    #             'widget_image_url': track['album']['images'][-1]['url'],
+    #             'web_url': track['url']
+    #         }
 
 
-    # Return items when length > 0
-    if tracks['tracks']['data']:
-        pass
+    # # Return items when length > 0
+    # if tracks['tracks']['data']:
+    #     pass
 
-    return {'mode': ErrorType.NO_RESULT}
+    # return {'mode': ErrorType.NO_RESULT}
 
 
 
@@ -750,13 +732,13 @@ def get_web_url(json, mode):
 
 def get_widget_image(json, mode, index):
     if mode == InputType.TRACK:
-        return json["tracks"]["data"][index]["album"]["images"][0]["url"]
+        return json["tracks"]["data"][index]["album"]["images"][-1]["url"]
     elif mode == InputType.ALBUM:
-        return json["albums"]["data"][index]["images"][0]["url"]
+        return json["albums"]["data"][index]["images"][-1]["url"]
     elif mode == InputType.PLAYLIST:
-        return json["playlists"]["data"][index]["images"][0]["url"]
+        return json["playlists"]["data"][index]["images"][-1]["url"]
     elif mode == InputType.ARTIST:
-        return json["data"][index]["album"]["images"][0]["url"]
+        return json["data"][index]["album"]["images"][-1]["url"]
 
 
 def get_widget_name(json, mode, index):
@@ -837,7 +819,7 @@ def handle_incoming_message():
     print("message: ", text)
 
     request_token = parse_request(text)
-    if request_token["mode"] not in InputType:
+    if request_token["mode"] in ErrorType:
         handle_error_request(sender, request_token["mode"])
     else:
         info = get_info(request_token["token"], request_token["mode"])

@@ -3,11 +3,11 @@
 import enum
 
 class InputType(enum.Enum):
-    TRACK = 0
-    ALBUM = 1
-    PLAYLIST = 2
-    ARTIST = 3
-    INQUERY = 4
+    TRACK = 'track'
+    ALBUM = 'album'
+    PLAYLIST = 'playlist'
+    ARTIST = 'artist'
+    INQUERY = 'inquery'
 
 
 class ResponseType(enum.Enum):
