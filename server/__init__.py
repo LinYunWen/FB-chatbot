@@ -21,7 +21,6 @@ global is_match
 
 
 
-
 # for verify
 @app.route("/", methods=["GET"])
 def handle_verification():
@@ -271,21 +270,10 @@ def get_alblum_name(mode, json):
     return "error"
 
 
-def matching_result(input, name):
+def matching_result(input, expect):
     global is_match
-    if name.find('(') >= 0:
-        temp = name.lower().split("(")
-        if input == temp[0][0:len(temp[0]) - 1]:
-            is_match = True
-            return True
-        else:
-            return False
-    else:
-        if input == name.lower():
-            is_match = True
-            return True
-        else:
-            return False
+    is_match = expect.startswith(input)   
+    return expect.startswith(input)
 
 
 
