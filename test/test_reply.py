@@ -53,3 +53,16 @@ class GetReplyInfoTest(unittest.TestCase):
     def test_get_info_return_no_result(self):
         data = server.get_info('foobar_not_exist', server.util.InputType.PLAYLIST)
         self.assertEqual(data['mode'], server.util.ErrorType.NO_RESULT)
+
+
+class ReplyTest(unittest.TestCase):
+    def setUp(self):
+        server.is_match = False
+
+    def test_reply_single_will_work(self):
+        info = server.get_info('Linkin Park', server.util.InputType.ARTIST)
+        server.reply('', info)
+
+    def test_reply_list_will_work(self):
+        info = server.get_info('新曲速報', server.util.InputType.PLAYLIST)
+        server.reply('', info)
