@@ -454,7 +454,7 @@ def _get_reply(msg, type):
         data.append({
             'title': title,
             'subtitle': d['artist']['name'] if 'artist' in d else title,
-            'wdiget_song_url': widget_url,
+            'widget_song_url': widget_url,
             'widget_image_url': d['images'][-1]['url'] if 'images' in d else d['album']['images'][-1]['url'],
             'web_url': d['url']
         })
