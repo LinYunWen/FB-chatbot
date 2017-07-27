@@ -7,6 +7,7 @@ from pymessenger.bot import Bot
 from bs4 import BeautifulSoup
 
 from server.util import *
+from server.fbmsg import *
 
 
 app = Flask(__name__)
