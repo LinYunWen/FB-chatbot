@@ -439,13 +439,13 @@ def parse_request(message):
     song_index = message.find("聽")
 
     if message[0] == '/':
-        return {"mode": InputType.SONG, "token": message[1:]}
+        return {"mode": SONG, "token": message[1:]}
     elif message[0] == '#':
-        return {"mode": InputType.ALBUM, "token": message[1:]}
+        return {"mode": ALBUM, "token": message[1:]}
     elif message[0] == '$':
-        return {"mode": InputType.PLAYLIST, "token": message[1:]}
+        return {"mode": PLAYLIST, "token": message[1:]}
     elif message[0] == '@':
-        return {"mode": InputType.ARTIST, "token": message[1:]}
+        return {"mode": ARTIST, "token": message[1:]}
     """
     elif message[0] == '?':
         token = message.split(" ")
