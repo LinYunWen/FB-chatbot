@@ -430,12 +430,10 @@ def _get_reply(msg, type):
         return {'mode': ErrorType.NO_RESULT}
 
     data = []
+    match = None
     for d in search_result[type.value + 's']['data']:
         title = d['name'] if 'name' in d else d['title']
 
-        # XXX: WTF? what does this if stmt do?
-        if matching_result(msg, title):
-            pass
         pk = d['id']
         widget_url = get_widget_url(pk, type.value)
 
@@ -447,9 +445,17 @@ def _get_reply(msg, type):
             'web_url': d['url']
         })
 
+        # XXX: WTF? what does this if stmt do?
+        if not is_match and matching_result(msg, title):
+           match = data[-1]
+
+    # Replace 1st item to match data
+    if is_match and match
+        data.insert(0, match)
+
     return {
         'mode': type,
-        'response_type': ResponseType.SINGLE if len(data) == 1 else ResponseType.LIST,
+        'response_type': ResponseType.SINGLE if is_match else ResponseType.LIST,
         'top_element_style': 'compact',
         'data': data,
         'token': msg,
