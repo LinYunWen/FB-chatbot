@@ -17,8 +17,8 @@ app = Flask(__name__)
 # test bot
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 bot = Bot(ACCESS_TOKEN)
-global is_match
 
+is_match = False
 
 
 # for verify
@@ -450,7 +450,7 @@ def _get_reply(msg, type):
            match = data[-1]
 
     # Replace 1st item to match data
-    if is_match and match
+    if is_match and match:
         data.insert(0, match)
 
     return {
