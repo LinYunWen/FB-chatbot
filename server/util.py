@@ -11,13 +11,13 @@ class InputType(enum.Enum):
 
 
 class ResponseType(enum.Enum):
-    SINGLE = 0
-    LIST = 1
+    SINGLE = 'single'
+    LIST = 'list'
 
 
 class ErrorType(enum.Enum):
-    BAD_INPUT = -1
-    NO_RESULT = -2
+    BAD_INPUT = 'bad_input'
+    NO_RESULT = 'no_result'
 
 
 def get_summary_total(json):
@@ -28,6 +28,8 @@ def get_summary_total(json):
     total = int(json["summary"]["total"])
     return 4 if total > 4 else total
 
+def get_widget_url(id, input_type):
+    return "https://widget.kkbox.com/v1/?id=" + id + "&type=" + input_type
 
 def parse_request(message):
     result = {'mode': ErrorType.BAD_INPUT, 'token': ''}
@@ -49,4 +51,17 @@ def parse_request(message):
     
     return result
 
-
+def modify_image_size(url, size):
+    index = url.rfind("/")
+    # print(index)
+    if index > 0:
+        temp = url[index + 1:]
+        want_size = str(size) + "x" + str(size) + ".jpg"
+        # print(size)
+        if temp != want_size:
+            # print(url[0:index+1] + "300x300.jpg")
+            return url[0:index + 1] + want_size
+        else:
+            return url
+    else:
+        return url
