@@ -49,8 +49,6 @@ def search(inquiry, type, territory):
     headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
 
     response = requests.get("https://api.kkbox.com/v1.1/search", params=payload, headers=headers)
-    # print("content: ",response.json())
-    # print("url: ",response.url)
     return response.json()
 
 def matching_result(input, expect):
@@ -88,7 +86,7 @@ def _get_reply(msg, type):
         title = d['name'] if 'name' in d else d['title']
 
         pk = d['id']
-        widget_url = util.get_widget_url(pk, type.value if type.value != InputType.TRACK else 'song')
+        widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
 
         data.append({
             'title': title,
@@ -101,6 +99,12 @@ def _get_reply(msg, type):
         # XXX: WTF? what does this if stmt do?
         if not is_match and matching_result(msg, title):
            match = data[-1]
+           data.pop()
+
+            if type == InputType.ARTIST:
+                data = 
+                return 
+
 
     # Replace 1st item to match data
     if is_match and match:
@@ -167,6 +171,10 @@ def _get_track(msg):
 def reply(user_id, info):
     client.set_sender_action(user_id, "mark_seen")
     client.set_sender_action(user_id, "typing_on")
+
+    if info['mode'] in ErrorType:
+        handle_error_request(user_id, info['mode'])
+        return 'ok'
 
     if info["response_type"] == ResponseType.SINGLE:
         client.reply_generic_template(user_id, info)
