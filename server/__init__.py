@@ -9,7 +9,6 @@ from server import util
 from server.util import ErrorType, InputType, ResponseType
 from server.fbmsg import Fbmsg
 
-
 app = Flask(__name__)
 
 # this is a token to match FB fans page
@@ -21,7 +20,6 @@ bot = Bot(ACCESS_TOKEN)
 client = Fbmsg(ACCESS_TOKEN)
 
 is_match = False
-
 
 # for verify
 @app.route("/", methods=["GET"])
@@ -43,7 +41,6 @@ def handle_error_request(user_id, error_type):
 
     return 0
 
-
 def search(inquiry, type, territory):
     payload = {"q": inquiry, "type": type, "territory": territory}
     headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
@@ -57,7 +54,6 @@ def matching_result(input, expect):
     global is_match
     is_match = expect.startswith(input)   
     return expect.startswith(input)
-
 
 def get_info(msg, info_type):
     global is_match
@@ -89,6 +85,7 @@ def _get_reply(msg, type):
 
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != InputType.TRACK else 'song')
+        print(type.value)
 
         data.append({
             'title': title,
@@ -114,20 +111,14 @@ def _get_reply(msg, type):
         'token': msg,
     }
 
-
-    
-
 def _get_album(msg):
     return _get_reply(msg, InputType.ALBUM)
-    
 
 def _get_playlist(msg):
     return _get_reply(msg, InputType.PLAYLIST)
 
-
 def _get_artist(msg):
     return _get_reply(msg, InputType.ARTIST)
-
 
 def _get_track(msg):
     return _get_reply(msg, InputType.TRACK)
@@ -163,7 +154,6 @@ def _get_track(msg):
 
     # return {'mode': ErrorType.NO_RESULT}
 
-
 def reply(user_id, info):
     client.set_sender_action(user_id, "mark_seen")
     client.set_sender_action(user_id, "typing_on")
@@ -176,7 +166,6 @@ def reply(user_id, info):
                 client.reply_text(user_id, "抱歉~沒有找到完全相同者\n請問是以下選項嗎？")
         client.reply_list_template(user_id, info)
     return 'ok'
-
 
 @app.route("/", methods=["POST"])
 def handle_incoming_message():
@@ -206,7 +195,6 @@ def handle_incoming_message():
         reply(sender_id, info)
 
     return "ok"
-
 
 if __name__ == "__main__":
     client.set_start_button()
