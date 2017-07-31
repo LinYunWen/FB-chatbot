@@ -157,6 +157,10 @@ def reply(user_id, info):
     client.set_sender_action(user_id, "mark_seen")
     client.set_sender_action(user_id, "typing_on")
 
+    if info['mode'] in ErrorType:
+        handle_error_request(user_id, info['mode'])
+        return 'ok'
+    
     if info["response_type"] == ResponseType.SINGLE:
         client.reply_generic_template(user_id, info)
     elif info["response_type"] == ResponseType.LIST:
