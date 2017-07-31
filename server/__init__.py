@@ -84,7 +84,7 @@ def _get_reply(msg, type):
         title = d['name'] if 'name' in d else d['title']
 
         pk = d['id']
-        widget_url = util.get_widget_url(pk, type.value if (type.value != InputType.TRACK) else 'song')
+        widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
         print(type.value)
         if type.value != InputType.TRACK:
             print(InputType.TRACK)
