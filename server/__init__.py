@@ -73,8 +73,12 @@ def get_info(msg, info_type):
         return ''
     return info
 
-def _get_reply(msg, type):
-    search_result = search(msg, type.value, 'TW')
+def _get_reply(msg, type, id):
+    if type == 'artist' and id != 'none':
+        search_result = util.artist_songs(id, 'TW')
+    else:
+        search_result = search(msg, type.value, 'TW')
+
     total = util.get_summary_total(search_result)
 
     if not total:
@@ -82,7 +86,7 @@ def _get_reply(msg, type):
 
     data = []
     match = None
-    for d in search_result[type.value + 's']['data']:
+    for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
         title = d['name'] if 'name' in d else d['title']
 
         pk = d['id']
@@ -101,9 +105,8 @@ def _get_reply(msg, type):
            match = data[-1]
            data.pop()
 
-            if type == InputType.ARTIST:
-                data = 
-                return 
+            if type == 'artist' and id == 'none':
+                return (pk, data)
 
 
     # Replace 1st item to match data
@@ -122,19 +125,23 @@ def _get_reply(msg, type):
     
 
 def _get_album(msg):
-    return _get_reply(msg, InputType.ALBUM)
+    return _get_reply(msg, InputType.ALBUM, 'none')
     
 
 def _get_playlist(msg):
-    return _get_reply(msg, InputType.PLAYLIST)
+    return _get_reply(msg, InputType.PLAYLIST, 'none')
 
 
 def _get_artist(msg):
-    return _get_reply(msg, InputType.ARTIST)
+    id, artist_data = _get_reply(msg, InputType.ARTIST, 'none')
+    track_data = _get_reply(msg, InputType.TRACK, id)
+    track_data['data'].insert(0,artist_data)
+    return track_data
+    
 
 
 def _get_track(msg):
-    return _get_reply(msg, InputType.TRACK)
+    return _get_reply(msg, InputType.TRACK, 1)
 
     # tracks = search(msg, 'track', 'TW')
     # num = get_summary_total(tracks)

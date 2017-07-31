@@ -65,3 +65,8 @@ def modify_image_size(url, size):
             return url
     else:
         return url
+
+def artist_songs(id, territory):
+    headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
+    return requests.get("https://api.kkbox.com/v1.1/artists/" + id + "/top-tracks?territory=" + territory + "&limit=5",
+                        headers=headers).json()
