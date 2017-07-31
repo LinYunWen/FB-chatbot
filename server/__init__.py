@@ -198,7 +198,7 @@ def handle_incoming_message():
     # Pure text message
     text = messaging["message"]["text"]
     print("message: ", text)
-    request_token = parse_request(text)
+    request_token = util.parse_request(text)
     if request_token["mode"] in ErrorType:
         handle_error_request(sender_id, request_token["mode"])
     else:
