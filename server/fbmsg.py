@@ -20,18 +20,20 @@ class Fbmsg(object):
         elif info["mode"] == InputType.ALBUM or info["mode"] == InputType.PLAYLIST or info["mode"] == InputType.ARTIST:
             webview_type = "tall"
 
+        print(len(info['data']))
         if info["response_type"] == ResponseType.SINGLE:
-            elements.append({
-                "title": info['data'][0]["title"],
-                "subtitle": info['data'][0]["subtitle"],
-                "image_url": info['data'][0]["widget_image_url"],
-                "default_action": {
-                    "type": "web_url",
-                    "url": info['data'][0]["widget_song_url"],
-                    "webview_height_ratio": webview_type
-                },
-                "buttons": self.produce_buttons(info)
-            })
+            for i in range(0, 5):
+                elements.append({
+                    "title": info['data'][i]["title"],
+                    "subtitle": info['data'][i]["subtitle"],
+                    "image_url": info['data'][i]["widget_image_url"],
+                    "default_action": {
+                        "type": "web_url",
+                        "url": info['data'][i]["widget_song_url"],
+                        "webview_height_ratio": webview_type
+                    }
+                })
+            elements.append("buttons": self.produce_buttons(info))
             # print(elements)
             return elements
         else:
@@ -45,7 +47,7 @@ class Fbmsg(object):
                         "webview_height_ratio": "full"
                     }
                 }]
-                print(len(info['data']))
+                
                 for i in range(1, len(info['data'])):
                     elements.append({
                         "title": info["data"][i]["title"],
