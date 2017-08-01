@@ -33,7 +33,7 @@ class Fbmsg(object):
                         "webview_height_ratio": webview_type
                     }
                 })
-            elements.append("buttons": self.produce_buttons(info))
+            elements.append(["buttons": self.produce_buttons(info)])
             # print(elements)
             return elements
         else:
