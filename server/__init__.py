@@ -45,14 +45,6 @@ def handle_error_request(user_id, error_type):
 
     return 0
 
-
-def search(inquiry, type, territory):
-    payload = {"q": inquiry, "type": type, "territory": territory}
-    headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
-
-    response = requests.get("https://api.kkbox.com/v1.1/search", params=payload, headers=headers)
-    return response.json()
-
 def matching_result(input, expect):
     global is_match
     is_match = expect.startswith(input)   
@@ -77,10 +69,10 @@ def get_info(msg, info_type):
     return info
 
 def _get_reply(msg, type, id):
-    if type == 'artist' and id != 'none':
+    if type.value == 'track' and id != 'none':
         search_result = util.artist_songs(id, 'TW')
     else:
-        search_result = search(msg, type.value, 'TW')
+        search_result = util.search(msg, type.value, 'TW')
 
     total = util.get_summary_total(search_result)
 
@@ -103,23 +95,22 @@ def _get_reply(msg, type, id):
             'web_url': d['url']
         })
 
+        
         # XXX: WTF? what does this if stmt do?
-        if not is_match and matching_result(msg, title):
+        if id == 'none' and not is_match and matching_result(msg, title):
             match = data[-1]
-            data.pop()
-
-            if type == 'artist' and id == 'none':
-                return pk, data
+            if type.value == 'artist':
+                return {'id':pk, 'data':match}
 
 
     # Replace 1st item to match data
-    if is_match and match:
+    if id == 'none' and is_match and match:
         data.insert(0, match)
 
     return {
         'mode': type,
         'response_type': ResponseType.SINGLE if is_match else ResponseType.LIST,
-        'top_element_style': 'compact',
+        'top_element_style': 'compact' if id == 'none' else 'large',
         'data': data,
         'token': msg,
     }
@@ -136,10 +127,20 @@ def _get_playlist(msg):
 
 
 def _get_artist(msg):
-    id, artist_data = _get_reply(msg, InputType.ARTIST, 'none')
-    track_data = _get_reply(msg, InputType.TRACK, id)
-    track_data['data'].insert(0,artist_data)
-    return track_data
+    global is_match
+    data = _get_reply(msg, InputType.ARTIST, 'none')
+    if is_match:
+        id = data['id']
+        artist_data = data['data']
+        #print(artist_data)
+        is_match = False
+        track_data = _get_reply(msg, InputType.TRACK, id)
+        #print(track_data['data'])
+        track_data['data'].insert(0, artist_data)
+        data = track_data
+        #print(track_data['data'].insert(0, artist_data))
+        #print(data)
+    return data
     
 
 

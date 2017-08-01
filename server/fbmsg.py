@@ -36,14 +36,14 @@ class Fbmsg(object):
             if info["top_element_style"] == "large":
                 elements = [{
                     "title": info["data"][0]["title"],
-                    "image_url": info["data"][0]["image_url"],
+                    "image_url": info["data"][0]["widget_image_url"],
                     "default_action": {
                         "type": "web_url",
-                        "url": info["data"][0]["url"],
+                        "url": info["data"][0]["web_url"],
                         "webview_height_ratio": "full"
                     }
                 }]
-                for i in range(1, info["num"] + 1):
+                for i in range(1, len(info['data'])):
                     elements.append({
                         "title": info["data"][i]["title"],
                         "subtitle": info["data"][i]["subtitle"],
@@ -85,7 +85,7 @@ class Fbmsg(object):
             if info["top_element_style"] == "large":
                 buttons = [{
                     "type": "web_url",
-                    "url": info["data"][0]["url"],
+                    "url": info["data"][0]["web_url"],
                     "title": "Web page"
                 }]
                 return buttons

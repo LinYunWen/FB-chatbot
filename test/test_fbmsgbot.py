@@ -20,7 +20,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': 'More'
         }]
         info = server._get_track('button_not_list')
-        print(server.client.produce_buttons(info))
+        #print(server.client.produce_buttons(info))
         self.assertEqual(server.client.produce_buttons(info), expect)
 
     def test_produce_elements_single(self):
