@@ -144,7 +144,7 @@ def _get_artist(msg):
 
 
 def _get_track(msg):
-    return _get_reply(msg, InputType.TRACK, 1)
+    return _get_reply(msg, InputType.TRACK, 'none')
 
     # tracks = search(msg, 'track', 'TW')
     # num = get_summary_total(tracks)
