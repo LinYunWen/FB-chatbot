@@ -70,7 +70,7 @@ def modify_image_size(url, size):
 
 def artist_songs(id, territory):
     headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
-    return requests.get("https://api.kkbox.com/v1.1/artists/" + id + "/top-tracks?territory=" + territory + "&limit=5",
+    return requests.get("https://api.kkbox.com/v1.1/artists/" + id + "/top-tracks?territory=" + territory + "&limit=3",
                         headers=headers).json()
 
 def search(inquiry, type, territory):
