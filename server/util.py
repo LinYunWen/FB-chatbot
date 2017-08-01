@@ -18,6 +18,7 @@ class ResponseType(enum.Enum):
 class ErrorType(enum.Enum):
     BAD_INPUT = 'bad_input'
     NO_RESULT = 'no_result'
+    SOMETHING_WRONG = 'something_wrong'
 
 
 def get_summary_total(json):
