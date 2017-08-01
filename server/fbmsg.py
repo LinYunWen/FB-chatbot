@@ -10,7 +10,8 @@ class Fbmsg(object):
 
     def send(self, data):
         response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + self.access_token, json=data)
-        return response.content
+        print(response.content)
+        return response
 
     def produce_elements(self, info):
         elements = []
@@ -105,7 +106,7 @@ class Fbmsg(object):
             "message": {"text": message}
         }
         response = self.send(data)
-        return response.json()
+        return response.content
 
     def reply_greeting_message(self):
         data = {
@@ -130,7 +131,7 @@ class Fbmsg(object):
             }
         }
         response = self.send(data)
-        return response.json()
+        return response.content
 
     def reply_generic_template(self, user_id, info):
         element = self.produce_elements(info)
@@ -151,7 +152,7 @@ class Fbmsg(object):
             }
         }
         response = self.send(data)
-        return response.json()
+        return response.content
 
     def reply_list_template(self, user_id, info):
         elements = self.produce_elements(info)
@@ -175,7 +176,7 @@ class Fbmsg(object):
         }
 
         response = self.send(data)
-        return response.json()
+        return response.content
 
     def set_start_button(self):
         data = {
@@ -184,7 +185,7 @@ class Fbmsg(object):
             }
         }
         response = self.send(data)
-        return response.json()
+        return response.content
 
     def set_sender_action(self, user_id, action):
         data = {
@@ -194,4 +195,4 @@ class Fbmsg(object):
             "sender_action": action
         }
         response = self.send(data)
-        return response.json()
+        return response.content
