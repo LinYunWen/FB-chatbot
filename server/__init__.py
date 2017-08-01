@@ -105,11 +105,12 @@ def _get_reply(msg, type, id):
 
     # Replace 1st item to match data
     if id == 'none' and is_match and match:
+        data.remove(match)
         data.insert(0, match)
 
     return {
         'mode': type,
-        'response_type': ResponseType.SINGLE if is_match else ResponseType.LIST,
+        'response_type': ResponseType.SINGLE if is_match and len(data) >= 2 else ResponseType.LIST,
         'top_element_style': 'compact' if id == 'none' else 'large',
         'data': data,
         'token': msg,
