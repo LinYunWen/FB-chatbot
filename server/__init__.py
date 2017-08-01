@@ -72,7 +72,8 @@ def get_info(msg, info_type):
     try:
         info = get[info_type](msg)
     except KeyError:
-        return info = {'mode':TypeError.SOMETHING_WRONG}
+        info = {'mode':TypeError.SOMETHING_WRONG}
+        return info
     return info
 
 def _get_reply(msg, type, id):
