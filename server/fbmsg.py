@@ -22,7 +22,7 @@ class Fbmsg(object):
 
         print(len(info['data']))
         if info["response_type"] == ResponseType.SINGLE:
-            for i in range(0, len(indo['data']) if len(info['data']) <= 10 else 10):
+            for i in range(0, len(info['data']) if len(info['data']) <= 10 else 10):
                 elements.append({
                     "title": info['data'][i]["title"],
                     "subtitle": info['data'][i]["subtitle"],
