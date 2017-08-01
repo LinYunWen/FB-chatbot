@@ -72,7 +72,7 @@ def get_info(msg, info_type):
     try:
         info = get[info_type](msg)
     except KeyError:
-        info = {'mode':TypeError.SOMETHING_WRONG}
+        info = {'mode':ErrorType.SOMETHING_WRONG}
         return info
     return info
 
