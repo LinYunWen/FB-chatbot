@@ -179,6 +179,7 @@ def reply(user_id, info):
     client.set_sender_action(user_id, "mark_seen")
     client.set_sender_action(user_id, "typing_on")
 
+    print(info)
     if info['mode'] in ErrorType:
         handle_error_request(user_id, info['mode'])
         return 'ok'
