@@ -9,7 +9,8 @@ class Fbmsg(object):
         self.access_token = access_token
 
     def send(self, data):
-        return requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + self.access_token, json=data)
+        response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + self.access_token, json=data)
+        return response.content
 
     def produce_elements(self, info):
         elements = []
