@@ -157,6 +157,7 @@ class Fbmsg(object):
     def reply_list_template(self, user_id, info):
         elements = self.produce_elements(info)
         buttons = self.produce_buttons(info)
+        print(elements)
 
         data = {
             "recipient": {
