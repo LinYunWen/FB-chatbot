@@ -31,9 +31,9 @@ class Fbmsg(object):
                         "type": "web_url",
                         "url": info['data'][i]["widget_song_url"],
                         "webview_height_ratio": webview_type
-                    }
+                    },
+                    "buttons": self.produce_buttons(info)
                 })
-            elements.append(["buttons": self.produce_buttons(info)])
             # print(elements)
             return elements
         else:
