@@ -22,7 +22,7 @@ class Fbmsg(object):
 
         print(len(info['data']))
         if info["response_type"] == ResponseType.SINGLE:
-            for i in range(0, 5):
+            for i in range(0, len(indo['data']) if len(info['data']) <= 10 else 10):
                 elements.append({
                     "title": info['data'][i]["title"],
                     "subtitle": info['data'][i]["subtitle"],
@@ -32,7 +32,7 @@ class Fbmsg(object):
                         "url": info['data'][i]["widget_song_url"],
                         "webview_height_ratio": webview_type
                     },
-                    "buttons": self.produce_buttons(info)
+                    "buttons": self.produce_buttons(info, i)
                 })
             # print(elements)
             return elements
@@ -63,7 +63,7 @@ class Fbmsg(object):
 
             else:
                 #for i in range(0, info["num"]):
-                for i in range(0, 4):
+                for i in range(0, len(info['data'])):
                     elements.append({
                         "title": info["data"][i]["title"],
                         "subtitle": info["data"][i]["subtitle"],
@@ -77,12 +77,12 @@ class Fbmsg(object):
                 return elements
 
 
-    def produce_buttons(self, info):
+    def produce_buttons(self, info, index):
         buttons = []
         if info["response_type"] == ResponseType.SINGLE:
             buttons = [{
                 "type": "web_url",
-                "url": info['data'][0]["web_url"],
+                "url": info['data'][index]["web_url"],
                 "title": "Web page"
             }]
             return buttons
@@ -90,7 +90,7 @@ class Fbmsg(object):
             if info["top_element_style"] == "large":
                 buttons = [{
                     "type": "web_url",
-                    "url": info["data"][0]["web_url"],
+                    "url": info["data"][index]["web_url"],
                     "title": "Web page"
                 }]
                 return buttons
@@ -159,7 +159,7 @@ class Fbmsg(object):
 
     def reply_list_template(self, user_id, info):
         elements = self.produce_elements(info)
-        buttons = self.produce_buttons(info)
+        buttons = self.produce_buttons(info, 0)
         print(elements)
 
         data = {
