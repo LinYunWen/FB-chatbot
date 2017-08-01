@@ -102,8 +102,8 @@ def _get_reply(msg, type, id):
 
         # XXX: WTF? what does this if stmt do?
         if not is_match and matching_result(msg, title):
-           match = data[-1]
-           data.pop()
+            match = data[-1]
+            data.pop()
 
             if type == 'artist' and id == 'none':
                 return (pk, data)
