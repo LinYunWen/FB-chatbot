@@ -45,6 +45,7 @@ class Fbmsg(object):
                         "webview_height_ratio": "full"
                     }
                 }]
+                print(len(info['data']))
                 for i in range(1, len(info['data'])):
                     elements.append({
                         "title": info["data"][i]["title"],
