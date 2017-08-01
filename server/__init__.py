@@ -110,7 +110,7 @@ def _get_reply(msg, type, id):
 
     return {
         'mode': type,
-        'response_type': ResponseType.SINGLE if is_match and len(data) >= 2 else ResponseType.LIST,
+        'response_type': ResponseType.SINGLE if is_match or len(data) < 2 else ResponseType.LIST,
         'top_element_style': 'compact' if id == 'none' else 'large',
         'data': data,
         'token': msg,
