@@ -109,7 +109,7 @@ def _get_reply(msg, type, id):
             data.pop()
 
             if type == 'artist' and id == 'none':
-                return (pk, data)
+                return pk, data
 
 
     # Replace 1st item to match data
