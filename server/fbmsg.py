@@ -48,7 +48,7 @@ class Fbmsg(object):
                     }
                 }]
                 
-                for i in range(1, len(info['data'])):
+                for i in range(1, len(info['data']) if len(info['data']) <= 4 else 4):
                     elements.append({
                         "title": info["data"][i]["title"],
                         "subtitle": info["data"][i]["subtitle"],
@@ -63,7 +63,7 @@ class Fbmsg(object):
 
             else:
                 #for i in range(0, info["num"]):
-                for i in range(0, len(info['data'])):
+                for i in range(0, len(info['data']) if len(info['data']) <= 4 else 4):
                     elements.append({
                         "title": info["data"][i]["title"],
                         "subtitle": info["data"][i]["subtitle"],
