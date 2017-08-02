@@ -64,8 +64,9 @@ def get_info(msg, info_type):
 
     try:
         info = get[info_type](msg)
-    except:
-        print(sys.exc_info()[0])
+    except KeyError:
+        print(sys.exc_info())
+        print(KeyError)
         return {'mode':ErrorType.SOMETHING_WRONG}
     return info
 
@@ -95,7 +96,6 @@ def _get_reply(msg, type, id):
     for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
         title = d['name'] if 'name' in d else d['title']
         #get subtitle
-        
 
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
