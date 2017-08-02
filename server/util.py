@@ -27,11 +27,11 @@ def get_summary_total(json):
     if 'error' in json:
         return 0
 
-    total = int(json["summary"]["total"])
+    total = int(json['summary']['total'])
     return 4 if total > 4 else total
 
 def get_widget_url(id, input_type):
-    return "https://widget.kkbox.com/v1/?id=" + id + "&type=" + input_type
+    return 'https://widget.kkbox.com/v1/?id=' + id + '&type=' + input_type
 
 def parse_request(message):
     result = {'mode': ErrorType.BAD_INPUT, 'token': ''}
@@ -43,21 +43,21 @@ def parse_request(message):
     result['token'] = message[1:]
     
     if input_type == '/' or input_type == '／':
-        result["mode"] = InputType.TRACK
+        result['mode'] = InputType.TRACK
     elif input_type == '#' or input_type == '＃':
-        result["mode"] = InputType.ALBUM
+        result['mode'] = InputType.ALBUM
     elif input_type == '$' or input_type == '＄':
-        result["mode"] = InputType.PLAYLIST
+        result['mode'] = InputType.PLAYLIST
     elif input_type == '@' or input_type == '＠':
-        result["mode"] = InputType.ARTIST
+        result['mode'] = InputType.ARTIST
     
     return result
 
 def modify_image_size(url, size):
-    index = url.rfind("/")
+    index = url.rfind('/')
     if index > 0:
         temp = url[index + 1:]
-        want_size = str(size) + "x" + str(size) + ".jpg"
+        want_size = str(size) + 'x' + str(size) + '.jpg'
         if temp != want_size:
             return url[0:index + 1] + want_size
         else:
@@ -66,13 +66,13 @@ def modify_image_size(url, size):
         return url
 
 def artist_songs(id, territory):
-    headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
-    return requests.get("https://api.kkbox.com/v1.1/artists/" + id + "/top-tracks?territory=" + territory + "&limit=3",
+    headers = {'Authorization': 'Bearer FDP48nJQc7DJD9MJtkhVqA=='}
+    return requests.get('https://api.kkbox.com/v1.1/artists/' + id + '/top-tracks?territory=' + territory + '&limit=3',
                         headers=headers).json()
 
 def search(inquiry, type, territory):
-    payload = {"q": inquiry, "type": type, "territory": territory}
-    headers = {"Authorization": "Bearer FDP48nJQc7DJD9MJtkhVqA=="}
+    payload = {'q': inquiry, 'type': type, 'territory': territory}
+    headers = {'Authorization': 'Bearer FDP48nJQc7DJD9MJtkhVqA=='}
 
-    response = requests.get("https://api.kkbox.com/v1.1/search", params=payload, headers=headers)
+    response = requests.get('https://api.kkbox.com/v1.1/search', params=payload, headers=headers)
     return response.json()
