@@ -64,8 +64,8 @@ def get_info(msg, info_type):
     try:
         info = get[info_type](msg)
     except KeyError:
-        info = {'mode':ErrorType.SOMETHING_WRONG}
-        return info
+        print(KeyError)
+        return {'mode':ErrorType.SOMETHING_WRONG}
     return info
 
 def _get_reply(msg, type, id):
@@ -85,16 +85,20 @@ def _get_reply(msg, type, id):
         title = d['name'] if 'name' in d else d['title']
         #get subtitle
         if 'album' in d:
-            subtitle = '{album} {artist}'.format(album=d['album']['name'], artist=d['album']['artist']['name'])
-        else:
+            subtitle = '{album}\n{artist}'.format(album=d['album']['name'], artist=d['album']['artist']['name'])
+        elif type == 'album':
              subtitle = d['artist']['name']
+        elif type == 'playlist':
+            subtitle = d['description']
+        elif type == 'artist':
+            subtitle = " "
 
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
 
         data.append({
             'title': title,
-            'subtitle': subtitle if type != 'playlist' else d['description'],
+            'subtitle': subtitle,
             'widget_song_url': widget_url,
             'widget_image_url': d['images'][-1]['url'] if 'images' in d else d['album']['images'][-1]['url'],
             'web_url': d['url']
