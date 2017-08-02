@@ -183,6 +183,7 @@ def handle_incoming_message():
 
     # request with not pure text message
     if "attachments" in messaging["message"]:
+        print(data)
         response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
         return "ok"
 
