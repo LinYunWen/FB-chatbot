@@ -80,7 +80,11 @@ class Fbmsg(object):
     def produce_buttons(self, info, index):
         buttons = []
         if info["response_type"] == ResponseType.SINGLE:
-            buttons = [{
+            buttons = [
+            {
+                'type': 'element_share'
+            },
+            {
                 "type": "web_url",
                 "url": info['data'][index]["web_url"],
                 "title": "Web page"
