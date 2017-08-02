@@ -84,9 +84,7 @@ def _get_reply(msg, type, id):
         search_result = util.artist_songs(id, 'TW')
     else:
         search_result = util.search(msg, type.value, 'TW')
-
     total = util.get_summary_total(search_result)
-    subtitle = set_subtitle(type,d)
 
     if not total:
         return {'mode': ErrorType.NO_RESULT}
@@ -94,9 +92,10 @@ def _get_reply(msg, type, id):
     data = []
     match = None
     for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
+        # set title and subtitle
         title = d['name'] if 'name' in d else d['title']
-        #get subtitle
-
+        subtitle = set_subtitle(type,d)
+        
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
 
