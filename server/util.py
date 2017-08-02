@@ -42,13 +42,13 @@ def parse_request(message):
     input_type = message[0]
     result['token'] = message[1:]
     
-    if input_type == '/':
+    if input_type == '/' or input_type == '／':
         result["mode"] = InputType.TRACK
-    elif input_type == '#':
+    elif input_type == '#' or input_type == '＃':
         result["mode"] = InputType.ALBUM
-    elif input_type == '$':
+    elif input_type == '$' or input_type == '＄':
         result["mode"] = InputType.PLAYLIST
-    elif input_type == '@':
+    elif input_type == '@' or input_type == '＠':
         result["mode"] = InputType.ARTIST
     
     return result
