@@ -24,7 +24,7 @@ class GetReplyInfoTest(unittest.TestCase):
 
     def test_get_artist_should_return_type_single(self):
         data = server._get_artist('林俊傑')
-        self.assertEqual(data['response_type'], server.util.ResponseType.SINGLE)
+        self.assertEqual(data['response_type'], server.util.ResponseType.LIST)
 
     def test_get_playlist_should_return_type_single(self):
         data = server._get_playlist('西洋新曲速報')

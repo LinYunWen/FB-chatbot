@@ -11,7 +11,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': 'Web page'
         }]
         info = server._get_track('生生')
-        self.assertEqual(server.client.produce_buttons(info), expect)
+        self.assertEqual(server.client.produce_buttons(info ,0), expect)
 
     def test_produce_buttons_list(self):
         expect = [{
@@ -20,8 +20,8 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': 'More'
         }]
         info = server._get_track('button_not_list')
-        print(server.client.produce_buttons(info))
-        self.assertEqual(server.client.produce_buttons(info), expect)
+        #print(server.client.produce_buttons(info))
+        self.assertEqual(server.client.produce_buttons(info, 0), expect)
 
     def test_produce_elements_single(self):
         expect = [{

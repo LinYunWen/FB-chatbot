@@ -6,7 +6,7 @@ from server.util import *
 class UtilTest(unittest.TestCase):
     def test_get_summary_total(self):
         # Test error should return 0
-        data = server.search('', 'album', 'TW')
+        data = server.util.search('', 'album', 'TW')
         self.assertEqual(get_summary_total(data), 0)
 
         # Test total greater then 4 should return 4
