@@ -174,7 +174,7 @@ def handle_incoming_message():
     # set action
     client.set_sender_action(sender_id, "mark_seen")
     client.set_sender_action(sender_id, "typing_on")
-    print(data)
+    #print(data)
 
     # handle first conversation
     if "postback" in messaging:
