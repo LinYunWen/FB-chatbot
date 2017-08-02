@@ -95,7 +95,7 @@ def _get_reply(msg, type, id):
     for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
         # set title and subtitle
         title = d['name'] if 'name' in d else d['title']
-        subtitle = set_subtitle(type,ad)
+        subtitle = set_subtitle(type,d)
         
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
