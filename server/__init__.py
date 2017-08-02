@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import requests
 from flask import Flask, request
 from pymessenger.bot import Bot
@@ -63,8 +64,8 @@ def get_info(msg, info_type):
 
     try:
         info = get[info_type](msg)
-    except error:
-        print(error)
+    except:
+        print(sys.exc_info()[0])
         return {'mode':ErrorType.SOMETHING_WRONG}
     return info
 
