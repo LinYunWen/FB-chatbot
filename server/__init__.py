@@ -84,10 +84,10 @@ def _get_reply(msg, type, id):
     for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
         title = d['name'] if 'name' in d else d['title']
         #get subtitle
-        if 'album' in d:
+        if type == 'track':
             subtitle = '{album}\n{artist}'.format(album=d['album']['name'], artist=d['album']['artist']['name'])
         elif type == 'album':
-             subtitle = d['artist']['name']
+            subtitle = d['artist']['name']
         elif type == 'playlist':
             subtitle = d['description']
         elif type == 'artist':
