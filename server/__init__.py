@@ -65,7 +65,9 @@ def get_info(msg, info_type):
     try:
         info = get[info_type](msg)
     except:
-        print(sys.exc_info())
+        tb = sys.exc_info()
+        print(tb[1])
+        print(traceback.print_tb(tb[2]))
         return {'mode':ErrorType.SOMETHING_WRONG}
     return info
 
@@ -137,14 +139,10 @@ def _get_artist(msg):
     if is_match:
         id = data['id']
         artist_data = data['data']
-        #print(artist_data)
         is_match = False
         track_data = _get_reply(msg, InputType.TRACK, id)
-        #print(track_data['data'])
         track_data['data'].insert(0, artist_data)
         data = track_data
-        #print(track_data['data'].insert(0, artist_data))
-        #print(data)
     return data
     
 

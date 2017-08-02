@@ -34,7 +34,6 @@ class Fbmsg(object):
                     },
                     "buttons": self.produce_buttons(info, i)
                 })
-            # print(elements)
             return elements
         else:
             if info["top_element_style"] == "large":
@@ -164,7 +163,6 @@ class Fbmsg(object):
     def reply_list_template(self, user_id, info):
         elements = self.produce_elements(info)
         buttons = self.produce_buttons(info, 0)
-        print(elements)
 
         data = {
             "recipient": {

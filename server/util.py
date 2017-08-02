@@ -55,13 +55,10 @@ def parse_request(message):
 
 def modify_image_size(url, size):
     index = url.rfind("/")
-    # print(index)
     if index > 0:
         temp = url[index + 1:]
         want_size = str(size) + "x" + str(size) + ".jpg"
-        # print(size)
         if temp != want_size:
-            # print(url[0:index+1] + "300x300.jpg")
             return url[0:index + 1] + want_size
         else:
             return url
