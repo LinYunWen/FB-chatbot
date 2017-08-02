@@ -59,7 +59,6 @@ class Fbmsg(object):
                         }
                     })
                 return elements
-
             else:
                 #for i in range(0, info["num"]):
                 for i in range(0, len(info['data']) if len(info['data']) <= 4 else 4):
@@ -69,7 +68,7 @@ class Fbmsg(object):
                         "image_url": info["data"][i]["widget_image_url"],
                         "default_action": {
                             "type": "web_url",
-                            "url": info["data"][i]["widget_song_url"],
+                            "url": info["data"][i]["widget_song_url"] if info['mode'] != InputType.ARTIST else info['data'][i]['web_url'],
                             "webview_height_ratio": webview_type
                         }
                     })

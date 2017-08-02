@@ -48,7 +48,16 @@ def handle_error_request(user_id, error_type):
 
 def matching_result(input, expect):
     global is_match
-    is_match = expect.lower().startswith(input.lower())   
+    is_match = False
+
+    index = expect.find('(')
+    if index >= 0:
+        if index >= 2:
+            expect_pre = expect[:index-1]
+            is_match = True if input.lower() == expect_pre.lower() else False
+            print('-' + expect_pre + '-')
+    else:
+        is_match = True if input.lower() == expect.lower() else False
     return is_match
 
 
