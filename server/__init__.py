@@ -48,8 +48,8 @@ def handle_error_request(user_id, error_type):
 
 def matching_result(input, expect):
     global is_match
-    is_match = expect.startswith(input)   
-    return expect.startswith(input)
+    is_match = expect.lower().startswith(input.lower())   
+    return is_match
 
 
 def get_info(msg, info_type):
