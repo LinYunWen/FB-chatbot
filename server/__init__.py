@@ -69,6 +69,15 @@ def get_info(msg, info_type):
         return {'mode':ErrorType.SOMETHING_WRONG}
     return info
 
+def set_subtitle(type,element):
+    if type.value == 'track':
+        return '{artist}\n{album}'.format(artist=element['album']['artist']['name'], album=element['album']['name'])
+    elif type.value == 'album':
+         return element['artist']['name']
+    elif type.value == 'playlist':
+         return element['description']
+    return " "
+
 def _get_reply(msg, type, id):
     if type.value == 'track' and id != 'none':
         search_result = util.artist_songs(id, 'TW')
@@ -76,6 +85,7 @@ def _get_reply(msg, type, id):
         search_result = util.search(msg, type.value, 'TW')
 
     total = util.get_summary_total(search_result)
+    subtitle = set_subtitle(type,d)
 
     if not total:
         return {'mode': ErrorType.NO_RESULT}
@@ -85,13 +95,7 @@ def _get_reply(msg, type, id):
     for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
         title = d['name'] if 'name' in d else d['title']
         #get subtitle
-        subtitle = " "
-        if type.value == 'track':
-            subtitle = '{artist}\n{album}'.format(artist=d['album']['artist']['name'], album=d['album']['name'])
-        elif type.value == 'album':
-            subtitle = d['artist']['name']
-        elif type.value == 'playlist':
-            subtitle = d['description']
+        
 
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
@@ -150,43 +154,7 @@ def _get_artist(msg):
 def _get_track(msg):
     return _get_reply(msg, InputType.TRACK, 'none')
 
-    # tracks = search(msg, 'track', 'TW')
-    # num = get_summary_total(tracks)
-
-    # # If result is empty, fast fail
-    # if not num:
-    #     return {'mode': ErrorType.NO_RESULT}
-
-    # # Check if we match the track
-    # for track in tracks['tracks']['data']:
-    #     #if msg.lower() in track['name'].lower():
-    #     if matching_result(msg, track["name"]):
-    #         track_id = track['id']
-    #         track_widget_url = get_widget_url(track_id, "song")
-
-    #         return {
-    #             'mode': InputType.TRACK,
-    #             'response_type': ResponseType.SINGLE,
-    #             'title': track['name'],
-    #             'subtitle': '{album} {artist}'.format(album=track['album']['name'], artist=track['album']['artist']['name']),
-    #             'widget_song_url': track_widget_url,
-    #             'widget_image_url': track['album']['images'][-1]['url'],
-    #             'web_url': track['url']
-    #         }
-
-
-    # # Return items when length > 0
-    # if tracks['tracks']['data']:
-    #     pass
-
-    # return {'mode': ErrorType.NO_RESULT}
-
-
 def reply(user_id, info):
-    client.set_sender_action(user_id, "mark_seen")
-    client.set_sender_action(user_id, "typing_on")
-
-    #print(info)
     if info['mode'] in ErrorType:
         handle_error_request(user_id, info['mode'])
         return 'ok'
@@ -206,6 +174,10 @@ def handle_incoming_message():
     data = request.json
     messaging = data["entry"][0]["messaging"][0]
     sender_id = messaging["sender"]["id"]
+
+    # set action
+    client.set_sender_action(user_id, "mark_seen")
+    client.set_sender_action(user_id, "typing_on")
 
     # handle first conversation
     if "postback" in messaging:
@@ -228,6 +200,8 @@ def handle_incoming_message():
         info = get_info(request_token["token"], request_token["mode"])
         reply(sender_id, info)
 
+    # set type off
+    client.set_sender_action(user_id, "typing_off")
     return "ok"
 
 
