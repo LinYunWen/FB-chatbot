@@ -84,15 +84,13 @@ def _get_reply(msg, type, id):
     for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
         title = d['name'] if 'name' in d else d['title']
         #get subtitle
-        if type == 'track':
-            subtitle = '{album}\n{artist}'.format(album=d['album']['name'], artist=d['album']['artist']['name'])
-        elif type == 'album':
+        subtitle = " "
+        if type.vlaue == 'track':
+            subtitle = '{artist}\n{album}'.format(artist=d['album']['artist']['name'], album=d['album']['name'])
+        elif type.vlaue == 'album':
             subtitle = d['artist']['name']
-            print(subtitle)
-        elif type == 'playlist':
+        elif type.vlaue == 'playlist':
             subtitle = d['description']
-        else:
-            subtitle = " "
 
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
