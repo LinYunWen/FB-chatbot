@@ -179,12 +179,15 @@ def handle_incoming_message():
     if "postback" in messaging:
         if messaging["postback"]["payload"] == "first_hand_shack":
             client.reply_text(sender_id, "請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"")
+            client.set_sender_action(sender_id, "typing_off")
             return "ok"
 
     # request with not pure text message
     if "attachments" in messaging["message"]:
         print(data)
+        client.reply_image_url(sender_id,'https://scontent.xx.fbcdn.net/v/t39.1997-6/p100x100/851587_369239346556147_162929011_n.png?_nc_ad=z-m&oh=6c4deff5f1cf8c2f7940dab6f54862a2&oe=5A2DF5B0')
         response = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, json=data)
+        client.set_sender_action(sender_id, "typing_off")
         return "ok"
 
     # Pure text message
