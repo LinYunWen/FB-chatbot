@@ -86,11 +86,11 @@ def _get_reply(msg, type, id):
         title = d['name'] if 'name' in d else d['title']
         #get subtitle
         subtitle = " "
-        if type.vlaue == 'track':
+        if type.value == 'track':
             subtitle = '{artist}\n{album}'.format(artist=d['album']['artist']['name'], album=d['album']['name'])
-        elif type.vlaue == 'album':
+        elif type.value == 'album':
             subtitle = d['artist']['name']
-        elif type.vlaue == 'playlist':
+        elif type.value == 'playlist':
             subtitle = d['description']
 
         pk = d['id']
