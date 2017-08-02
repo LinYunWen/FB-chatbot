@@ -83,25 +83,28 @@ def _get_reply(msg, type, id):
     match = None
     for d in search_result[type.value + 's']['data'] if id == 'none' else search_result['data']:
         title = d['name'] if 'name' in d else d['title']
+        #get subtitle
+        if 'album' in d:
+            subtitle = '{album} {artist}'.format(album=d['album']['name'], artist=d['album']['artist']['name'])
+        else:
+             subtitle = d['artist']['name']
 
         pk = d['id']
         widget_url = util.get_widget_url(pk, type.value if type.value != 'track' else 'song')
 
         data.append({
             'title': title,
-            'subtitle': d['artist']['name'] if 'artist' in d else title,
+            'subtitle': subtitle if type != 'playlist' else d['description'],
             'widget_song_url': widget_url,
             'widget_image_url': d['images'][-1]['url'] if 'images' in d else d['album']['images'][-1]['url'],
             'web_url': d['url']
         })
 
-        
         # XXX: WTF? what does this if stmt do?
         if id == 'none' and not is_match and matching_result(msg, title):
             match = data[-1]
             if type.value == 'artist':
                 return {'id':pk, 'data':match}
-
 
     # Replace 1st item to match data
     if id == 'none' and is_match and match:
@@ -116,16 +119,11 @@ def _get_reply(msg, type, id):
         'token': msg,
     }
 
-
-    
-
 def _get_album(msg):
     return _get_reply(msg, InputType.ALBUM, 'none')
-    
 
 def _get_playlist(msg):
     return _get_reply(msg, InputType.PLAYLIST, 'none')
-
 
 def _get_artist(msg):
     global is_match
