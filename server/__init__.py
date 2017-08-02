@@ -63,8 +63,8 @@ def get_info(msg, info_type):
 
     try:
         info = get[info_type](msg)
-    except KeyError:
-        print(KeyError)
+    except error:
+        print(error)
         return {'mode':ErrorType.SOMETHING_WRONG}
     return info
 
@@ -88,9 +88,10 @@ def _get_reply(msg, type, id):
             subtitle = '{album}\n{artist}'.format(album=d['album']['name'], artist=d['album']['artist']['name'])
         elif type == 'album':
             subtitle = d['artist']['name']
+            print(subtitle)
         elif type == 'playlist':
             subtitle = d['description']
-        elif type == 'artist':
+        else:
             subtitle = " "
 
         pk = d['id']
