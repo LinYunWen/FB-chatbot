@@ -42,7 +42,7 @@ def handle_error_request(user_id, error_type):
         client.reply_text(user_id, "未設定之指令")
         client.reply_text(user_id, "請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"")
         counter = (counter + 1) % 3
-        print(counter)
+        print('counter: ', counter)
     elif error_type == ErrorType.NO_RESULT:
         client.reply_text(user_id, "抱歉～沒有尋找到任何資料")
     elif error_type == ErrorType.SOMETHING_WRONG:

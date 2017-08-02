@@ -20,7 +20,7 @@ class Fbmsg(object):
         elif info["mode"] == InputType.ALBUM or info["mode"] == InputType.PLAYLIST or info["mode"] == InputType.ARTIST:
             webview_type = "tall"
 
-        print(len(info['data']))
+        print('data length:', len(info['data']))
         if info["response_type"] == ResponseType.SINGLE:
             for i in range(0, len(info['data']) if len(info['data']) <= 10 else 10):
                 elements.append({
