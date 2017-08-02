@@ -177,7 +177,6 @@ def reply(user_id, info):
         client.reply_list_template(user_id, info)
     return 'ok'
 
-
 @app.route('/', methods=['POST'])
 def handle_incoming_message():
     data = request.json
