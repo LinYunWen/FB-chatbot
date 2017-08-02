@@ -173,7 +173,7 @@ def reply(user_id, info):
         if info['top_element_style'] == 'compact':
             if info['mode'] == InputType.TRACK or info['mode'] == InputType.ARTIST:
                 client.reply_text(user_id, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
-                set_sender_action(user_id, 'typing_on')
+                client.set_sender_action(user_id, 'typing_on')
         client.reply_list_template(user_id, info)
     return 'ok'
 
