@@ -176,8 +176,8 @@ def handle_incoming_message():
     sender_id = messaging["sender"]["id"]
 
     # set action
-    client.set_sender_action(user_id, "mark_seen")
-    client.set_sender_action(user_id, "typing_on")
+    client.set_sender_action(sender_id, "mark_seen")
+    client.set_sender_action(sender_id, "typing_on")
 
     # handle first conversation
     if "postback" in messaging:
@@ -201,7 +201,7 @@ def handle_incoming_message():
         reply(sender_id, info)
 
     # set type off
-    client.set_sender_action(user_id, "typing_off")
+    client.set_sender_action(sender_id, "typing_off")
     return "ok"
 
 
