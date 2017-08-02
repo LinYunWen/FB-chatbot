@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
+import sys, traceback
 import requests
 from flask import Flask, request
 from pymessenger.bot import Bot
