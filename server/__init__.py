@@ -219,5 +219,5 @@ def handle_incoming_message():
 
 
 if __name__ == '__main__':
-    client.set_start_button()
+    print(client.set_start_button())
     app.run(debug=True)
