@@ -10,8 +10,9 @@ from server import util
 from server.util import ErrorType, InputType, ResponseType
 from server.fbmsg import Fbmsg
 
-
 app = Flask(__name__)
+# Init start connection button in dialog
+client.set_start_button()
 
 # this is a token to match FB fans page
 # Light up
@@ -217,11 +218,3 @@ def handle_incoming_message():
     client.set_sender_action(sender_id, 'typing_off')
     return 'ok'
 
-
-# Init start connection button in dialog
-client.set_start_button()
-
-
-if __name__ == '__main__':
-    print(client.set_start_button())
-    app.run(debug=True)
