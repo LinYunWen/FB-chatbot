@@ -189,8 +189,7 @@ class Fbmsg(object):
                 'payload': 'first_hand_shack'
             }
         }
-        response = self.send(data)
-        print(response.content)
+        response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token=' + self.access_token, json=data)
         return response.content
 
     def set_sender_action(self, user_id, action):
