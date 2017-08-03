@@ -197,6 +197,7 @@ class Fbmsg(object):
             'recipient': {
                 'id': user_id
             },
+            
             'sender_action': action
         }
         response = self.send(data)
