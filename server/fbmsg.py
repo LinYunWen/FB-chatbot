@@ -190,6 +190,7 @@ class Fbmsg(object):
             }
         }
         response = self.send(data)
+        print(response.content)
         return response.content
 
     def set_sender_action(self, user_id, action):
