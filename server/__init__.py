@@ -218,6 +218,10 @@ def handle_incoming_message():
     return 'ok'
 
 
+# Init start connection button in dialog
+client.set_start_button()
+
+
 if __name__ == '__main__':
     print(client.set_start_button())
     app.run(debug=True)
