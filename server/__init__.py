@@ -11,8 +11,6 @@ from server.util import ErrorType, InputType, ResponseType
 from server.fbmsg import Fbmsg
 
 app = Flask(__name__)
-# Init start connection button in dialog
-client.set_start_button()
 
 # this is a token to match FB fans page
 # Light up
@@ -21,10 +19,11 @@ client.set_start_button()
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 bot = Bot(ACCESS_TOKEN)
 client = Fbmsg(ACCESS_TOKEN)
+# Init start connection button in dialog
+client.set_start_button()
 
 is_match = False
 counter = 0
-
 
 # for verify
 @app.route('/', methods=['GET'])
