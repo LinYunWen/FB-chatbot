@@ -3,6 +3,8 @@
 import os
 import sys, traceback
 import requests
+import psycopg2
+import urlparse
 from flask import Flask, request
 from pymessenger.bot import Bot
 
@@ -11,6 +13,18 @@ from server.util import ErrorType, InputType, ResponseType
 from server.fbmsg import Fbmsg
 
 app = Flask(__name__)
+
+# connect to database
+urlparse.uses_netloc.append('postgres')
+url = urlparse.urlparse(os.environ['DATABASE_URL'])
+conn = psycopg2.connect(
+    database = url.path[1:],
+    user = url.username,
+    password = url.password,
+    host = url.hostname,
+    port = url.port
+)
+cur = conn.cursor()
 
 # this is a token to match FB fans page
 # Light up
@@ -194,6 +208,9 @@ def handle_incoming_message():
         if messaging['postback']['payload'] == 'first_hand_shack':
             client.reply_text(sender_id, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
             client.set_sender_action(sender_id, 'typing_off')
+            print(data)
+            #cur.execute('INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUE (1, sender_id, "Hello", "你好", "fjkdlsul", "en-US", 8, "male")')
+            #conn.commit()
             return 'ok'
 
     # request with not pure text message
