@@ -210,7 +210,7 @@ def handle_incoming_message():
             client.reply_text(sender_id, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
             client.set_sender_action(sender_id, 'typing_off')
             print(data)
-            cur.execute('INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (1, ' + sender_id + ', "Hello", "你好", "fjkdlsul", "en-US", 8, "male")')
+            cur.execute("INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (2, " + sender_id + ", 'Hello', '你好', 'fjkdlsul', 'en-US', 8, 'male')")
             conn.commit()
             return 'ok'
 
