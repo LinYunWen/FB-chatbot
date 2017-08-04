@@ -197,6 +197,7 @@ def reply(user_id, mode, info):
 
 @app.route('/', methods=['POST'])
 def handle_incoming_message():
+    global is_broadcast
     data = request.json
     messaging = data['entry'][0]['messaging'][0]
     sender_id = messaging['sender']['id']
