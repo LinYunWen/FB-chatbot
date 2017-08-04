@@ -204,3 +204,4 @@ class Fbmsg(object):
             data['recipient']['id'] = row
             self.send(data)
         return  self.reply_text('1727613570586940', 'finished broadcast sending')
+        # return  self.reply_text('1417787291642087', 'finished broadcast sending')
