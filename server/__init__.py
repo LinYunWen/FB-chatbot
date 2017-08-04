@@ -8,8 +8,8 @@ from pymessenger.bot import Bot
 
 from server import util
 from server.util import ErrorType, InputType, ResponseType, ModeType
-# from server.fbmsg import Fbmsg
 from server import fbmsg
+from server.fbmsg import Fbmsg
 
 app = Flask(__name__)
 
