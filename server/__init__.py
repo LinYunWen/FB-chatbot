@@ -4,6 +4,7 @@ import os
 import sys, traceback
 import requests
 import psycopg2
+import time
 # from urllib.parse import urlparse
 import urllib.parse
 from flask import Flask, request
@@ -209,9 +210,12 @@ def handle_incoming_message():
         if messaging['postback']['payload'] == 'first_hand_shack':
             client.reply_text(sender_id, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
             client.set_sender_action(sender_id, 'typing_off')
-            print(data)
-            cur.execute("INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (2, " + sender_id + ", 'Hello', '你好', 'fjkdlsul', 'en-US', 8, 'male')")
-            conn.commit()
+            try:
+                print(data)
+                cur.execute("INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (2, " + sender_id + ", 'Hello', '你好', 'fjkdlsul', 'en-US', 8, 'male')")
+                conn.commit()
+            except:
+                return 'ok'
             return 'ok'
 
     # request with not pure text message
@@ -229,7 +233,11 @@ def handle_incoming_message():
         handle_error_request(sender_id, request_token['mode'])
     else:
         info = get_info(request_token['token'], request_token['mode'])
-        reply(sender_id, info)
+        if sender_id != '1026383920798666'
+            reply(sender_id, info)
+        else:
+            client.reply_text(message)
+            reply('1727613570586940', info)
 
     # set type off
     client.set_sender_action(sender_id, 'typing_off')
