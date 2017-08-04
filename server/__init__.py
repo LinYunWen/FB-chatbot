@@ -237,7 +237,7 @@ def handle_incoming_message():
         if text == '!!!' or text == '！！！':
             is_broadcast = not is_broadcast
             client.reply_text(sender_id, ModeType.USER_MODE, 'being in broadcast mode' if is_broadcast else 'leaving out broadcast mode')
-            print(is_broadcast)
+            print('is broadcast: ' ,is_broadcast)
             return 'ok'
         if is_broadcast:
             request_token = util.parse_request(text)
@@ -248,7 +248,7 @@ def handle_incoming_message():
                 reply(sender_id, ModeType.BROADCAST_MODE, info)
             return 'ok'
 
-    print(is_broadcast)
+    print('unique;', is_broadcast)
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         handle_error_request(sender_id, request_token['mode'])
