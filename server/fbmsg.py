@@ -196,7 +196,7 @@ class Fbmsg(object):
         }
         return self.send(data)
 
-    def broadcast_send(data):
+    def broadcast_send(self, data):
         cur.execute('SELECT user_id from audience')
         rows = cur.fetchall()
         for row in rows:
