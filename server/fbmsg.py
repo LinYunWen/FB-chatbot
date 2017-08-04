@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import requests
 import psycopg2
 import urllib.parse
