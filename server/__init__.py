@@ -214,7 +214,7 @@ def handle_incoming_message():
             client.set_sender_action(sender_id, 'typing_off')
             try:
                 print(data)
-                cur.execute("INSERT INTO audience2 (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', ---, '---', '---', 8, '---')")
+                cur.execute("INSERT INTO audience2 (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
                 conn.commit()
             except:
                 print('error on insert data')
