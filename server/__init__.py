@@ -198,7 +198,7 @@ def handle_incoming_message():
             client.reply_text(sender_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
             client.set_sender_action(sender_id, 'typing_off')
             try:
-                print(data)
+                print('insert new person')
                 Fbmsg.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
                 Fbmsg.conn.commit()
             except:
@@ -223,7 +223,6 @@ def handle_incoming_message():
     # broadcast mode
     if sender_id == '1727613570586940':
         if text[0] == '!' or text == '！':
-            print(text[1:])
             request_token = util.parse_request(text[1:])
             if request_token['mode'] in ErrorType:
                 client.reply_text(sender_id, ModeType.BROADCAST_MODE, text[1:])

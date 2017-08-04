@@ -215,7 +215,7 @@ class Fbmsg(object):
         cur.execute('SELECT user_id from audience')
         rows = cur.fetchall()
         for row in rows:
-            print('row: ', row[0])
+            # print('row: ', row[0])
             data['recipient']['id'] = row[0]
             self.send(data)
         return  self.reply_text('1727613570586940', ModeType.USER_MODE, 'finished broadcast sending')
