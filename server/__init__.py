@@ -4,7 +4,7 @@ import os
 import sys, traceback
 import requests
 import psycopg2
-import urlparse
+from urllib.parse import urlparse
 from flask import Flask, request
 from pymessenger.bot import Bot
 
