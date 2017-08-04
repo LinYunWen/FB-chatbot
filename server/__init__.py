@@ -214,7 +214,7 @@ def handle_incoming_message():
             client.set_sender_action(sender_id, 'typing_off')
             try:
                 print(data)
-                cur.execute("INSERT INTO audience2 (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
+                cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
                 conn.commit()
             except:
                 print('error on insert data')
@@ -237,7 +237,6 @@ def handle_incoming_message():
     """
     # broadcast mode
     if sender_id == '1727613570586940':
-    # if sender_id == '1417787291642087':
         if text == '!!!' or text == '！！！':
             is_broadcast = not is_broadcast
             client.reply_text(sender_id, ModeType.USER_MODE, 'being in broadcast mode' if is_broadcast else 'leaving out broadcast mode')
