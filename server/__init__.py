@@ -233,7 +233,7 @@ def handle_incoming_message():
         handle_error_request(sender_id, request_token['mode'])
     else:
         info = get_info(request_token['token'], request_token['mode'])
-        if sender_id != '1026383920798666':
+        if str(sender_id) != '1026383920798666':
             reply(sender_id, info)
         else:
             client.reply_text(message)
