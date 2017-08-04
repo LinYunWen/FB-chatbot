@@ -230,6 +230,8 @@ def handle_incoming_message():
     print('message: ', text)
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
+        print('error broadcast')
+        client.reply_text(text)
         handle_error_request(sender_id, request_token['mode'])
     else:
         info = get_info(request_token['token'], request_token['mode'])
@@ -238,7 +240,6 @@ def handle_incoming_message():
             reply(sender_id, info)
         else:
             print('broadcast')
-            client.reply_text(text)
             reply('1727613570586940', info)
 
     # set type off
