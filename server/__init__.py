@@ -234,8 +234,10 @@ def handle_incoming_message():
     else:
         info = get_info(request_token['token'], request_token['mode'])
         if str(sender_id) != '1026383920798666':
+            print('return')
             reply(sender_id, info)
         else:
+            print('broadcast')
             client.reply_text(message)
             reply('1727613570586940', info)
 
