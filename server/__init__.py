@@ -238,7 +238,7 @@ def handle_incoming_message():
             reply(sender_id, info)
         else:
             print('broadcast')
-            client.reply_text(message)
+            client.reply_text(text)
             reply('1727613570586940', info)
 
     # set type off
