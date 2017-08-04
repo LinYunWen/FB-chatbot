@@ -247,6 +247,7 @@ def handle_incoming_message():
                 reply(sender_id, ModeType.BROADCAST_MODE, info)
             return 'ok'
 
+    print(is_broadcast)
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         handle_error_request(sender_id, request_token['mode'])
