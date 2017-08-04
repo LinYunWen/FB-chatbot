@@ -3,10 +3,6 @@
 import os
 import sys, traceback
 import requests
-import psycopg2
-import time
-# from urllib.parse import urlparse
-import urllib.parse
 from flask import Flask, request
 from pymessenger.bot import Bot
 
@@ -16,17 +12,7 @@ from server.fbmsg import Fbmsg
 
 app = Flask(__name__)
 
-# connect to database
-urllib.parse.uses_netloc.append('postgres')
-url = urllib.parse.urlparse(os.environ['DATABASE_URL'])
-conn = psycopg2.connect(
-    database = url.path[1:],
-    user = url.username,
-    password = url.password,
-    host = url.hostname,
-    port = url.port
-)
-cur = conn.cursor()
+
 
 # this is a token to match FB fans page
 # Light up
@@ -213,8 +199,8 @@ def handle_incoming_message():
             client.set_sender_action(sender_id, 'typing_off')
             try:
                 print(data)
-                cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
-                conn.commit()
+                Fbmsg.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
+                Fbmsg.conn.commit()
             except:
                 print('error on insert data')
                 tb = sys.exc_info()
