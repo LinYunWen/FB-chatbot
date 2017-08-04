@@ -4,7 +4,8 @@ import os
 import sys, traceback
 import requests
 import psycopg2
-from urllib.parse import urlparse
+# from urllib.parse import urlparse
+import urllib.parse
 from flask import Flask, request
 from pymessenger.bot import Bot
 
@@ -15,7 +16,7 @@ from server.fbmsg import Fbmsg
 app = Flask(__name__)
 
 # connect to database
-# urlparse.uses_netloc.append('postgres')
+urlparse.uses_netloc.append('postgres')
 url = urlparse.urlparse(os.environ['DATABASE_URL'])
 conn = psycopg2.connect(
     database = url.path[1:],
