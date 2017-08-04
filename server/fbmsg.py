@@ -110,7 +110,7 @@ class Fbmsg(object):
             'recipient': {'id': user_id},
             'message': {'text': message}
         }
-        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, [])
 
     def reply_greeting_message(self):
         data = {
