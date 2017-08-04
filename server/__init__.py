@@ -11,7 +11,7 @@ from flask import Flask, request
 from pymessenger.bot import Bot
 
 from server import util
-from server.util import ErrorType, InputType, ResponseType
+from server.util import ErrorType, InputType, ResponseType, ModeType
 from server.fbmsg import Fbmsg
 
 app = Flask(__name__)
@@ -39,6 +39,7 @@ client = Fbmsg(ACCESS_TOKEN)
 client.set_start_button()
 
 is_match = False
+is_broadcast = False
 counter = 0
 
 # for verify
@@ -55,14 +56,14 @@ def get_access_token():
 def handle_error_request(user_id, error_type):
     global counter
     if error_type == ErrorType.BAD_INPUT:
-        client.reply_text(user_id, '未設定之指令')
-        client.reply_text(user_id, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+        client.reply_text(user_id, ModeType.USER_MODE, '未設定之指令')
+        client.reply_text(user_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
         #counter = (counter + 1) % 3
         #print('counter: ', counter)
     elif error_type == ErrorType.NO_RESULT:
-        client.reply_text(user_id, '抱歉～沒有尋找到任何資料')
+        client.reply_text(user_id, ModeType.USER_MODE, '抱歉～沒有尋找到任何資料')
     elif error_type == ErrorType.SOMETHING_WRONG:
-        client.reply_text(user_id, '抱歉～有錯誤')
+        client.reply_text(user_id, ModeType.USER_MODE, '抱歉～有錯誤')
 
     return 0
 
@@ -178,19 +179,19 @@ def _get_artist(msg):
 def _get_track(msg):
     return _get_reply(msg, InputType.TRACK, 'none')
 
-def reply(user_id, info):
+def reply(user_id, mode, info):
     if info['mode'] in ErrorType:
         handle_error_request(user_id, info['mode'])
         return 'ok'
 
     if info['response_type'] == ResponseType.SINGLE:
-        client.reply_generic_template(user_id, info)
+        client.reply_generic_template(user_id, mode, info)
     elif info['response_type'] == ResponseType.LIST:
         if info['top_element_style'] == 'compact':
             if info['mode'] == InputType.TRACK or info['mode'] == InputType.ARTIST:
-                client.reply_text(user_id, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
+                client.reply_text(user_id, mode, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
                 client.set_sender_action(user_id, 'typing_on')
-        client.reply_list_template(user_id, info)
+        client.reply_list_template(user_id, mode, info)
     return 'ok'
 
 
@@ -208,11 +209,11 @@ def handle_incoming_message():
     # handle first conversation
     if 'postback' in messaging:
         if messaging['postback']['payload'] == 'first_hand_shack':
-            client.reply_text(sender_id, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+            client.reply_text(sender_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
             client.set_sender_action(sender_id, 'typing_off')
             try:
                 print(data)
-                cur.execute("INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (2, " + sender_id + ", 'Hello', '你好', 'fjkdlsul', 'en-US', 8, 'male')")
+                cur.execute("INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (2, " + sender_id + ", '---', ---, '---', '---', 8, '---')")
                 conn.commit()
             except:
                 return 'ok'
@@ -220,32 +221,35 @@ def handle_incoming_message():
 
     # request with not pure text message
     if 'attachments' in messaging['message']:
-        client.reply_text(sender_id, '❤️')
-        client.reply_text(sender_id, '😁')
+        client.reply_text(sender_id, ModeType.USER_MODE, '❤️')
+        client.reply_text(sender_id, ModeType.USER_MODE, '😁')
         client.set_sender_action(sender_id, 'typing_off')
         return 'ok'
 
     # Pure text message
     text = messaging['message']['text']
     print('message: ', text)
+
+    # broadcast mode
+    if sender_id == '1727613570586940':
+        if text == '~~~':
+            is_broadcast = not is_broadcast
+            client.reply_text(sender_id, ModeType.USER_MODE, 'being in broadcast mode' if is_broadcast else 'leaving out broadcast mode')
+        if is_broadcast:
+            request_token = util.parse_request(text)
+            if request_token['mode'] in ErrorType:
+                client.reply_text(sender_id, ModeType.BROADCAST_MODE, text)
+            else:
+                info = get_info(request_token['token'], request_token['mode'])
+                reply(sender_id, ModeType.BROADCAST_MODE, info)
+            return 'ok'
+
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
-        print('error broadcast')
-        if str(sender_id) == '1026383920798666':
-            print('broadcast')
-            client.reply_text('1727613570586940', text)
-        elif str(sender_id) == '1727613570586940':
-            client.reply_text('1026383920798666', text)
-        else:
-            handle_error_request(sender_id, request_token['mode'])
+        handle_error_request(sender_id, request_token['mode'])
     else:
         info = get_info(request_token['token'], request_token['mode'])
-        if str(sender_id) != '1026383920798666':
-            print('return')
-            reply(sender_id, info)
-        else:
-            print('broadcast')
-            reply('1727613570586940', info)
+        reply(sender_id, ModeType.USER_MODE, info)
 
     # set type off
     client.set_sender_action(sender_id, 'typing_off')

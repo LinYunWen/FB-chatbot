@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from server.util import ErrorType, InputType, ResponseType
+from server.util import ErrorType, InputType, ResponseType, ModeType
 
 
 class Fbmsg(object):
@@ -11,7 +11,7 @@ class Fbmsg(object):
     def send(self, data):
         response = requests.post('https://graph.facebook.com/v2.6/me/messages?access_token=' + self.access_token, json=data)
         print(response.content)
-        return response
+        return response.content
 
     def produce_elements(self, info):
         elements = []
@@ -105,13 +105,12 @@ class Fbmsg(object):
                 return buttons
 
     # reply request
-    def reply_text(self, user_id, message):
+    def reply_text(self, user_id, mode, message):
         data = {
             'recipient': {'id': user_id},
             'message': {'text': message}
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
 
     def reply_greeting_message(self):
         data = {
@@ -121,7 +120,7 @@ class Fbmsg(object):
             }
         }
 
-    def reply_image_url(self, user_id, image_url):
+    def reply_image_url(self, user_id, mode, image_url):
         data = {
             'recipient': {
                 'id': user_id
@@ -135,10 +134,9 @@ class Fbmsg(object):
                 }
             }
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
 
-    def reply_generic_template(self, user_id, info):
+    def reply_generic_template(self, user_id, mode, info):
         element = self.produce_elements(info)
         data = {
             'recipient': {
@@ -156,10 +154,9 @@ class Fbmsg(object):
                 }
             }
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
 
-    def reply_list_template(self, user_id, info):
+    def reply_list_template(self, user_id, mode, info):
         elements = self.produce_elements(info)
         buttons = self.produce_buttons(info, 0)
 
@@ -179,9 +176,7 @@ class Fbmsg(object):
                 }
             }
         }
-
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
 
     def set_start_button(self):
         data = {
@@ -197,8 +192,15 @@ class Fbmsg(object):
             'recipient': {
                 'id': user_id
             },
-            
             'sender_action': action
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data)
+
+    def broadcast_send(data, filter):
+        cur.execute('SELECT user_id from audience')
+        rows = cur.fetchall()
+        for row in rows:
+            print('row', row)
+            data['recipient']['id'] = row
+            self.send(data)
+        return  self.reply_text('1727613570586940', 'finished broadcast sending')
