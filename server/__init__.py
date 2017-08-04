@@ -199,8 +199,8 @@ def handle_incoming_message():
             client.set_sender_action(sender_id, 'typing_off')
             try:
                 print('insert new person')
-                Fbmsg.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
-                Fbmsg.conn.commit()
+                fbmsg.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
+                fbmsg.conn.commit()
             except:
                 print('error on insert data')
                 tb = sys.exc_info()
