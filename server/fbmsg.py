@@ -110,7 +110,7 @@ class Fbmsg(object):
             'recipient': {'id': user_id},
             'message': {'text': message}
         }
-        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, [])
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
     def reply_greeting_message(self):
         data = {
@@ -134,7 +134,7 @@ class Fbmsg(object):
                 }
             }
         }
-        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
     def reply_generic_template(self, user_id, mode, info):
         element = self.produce_elements(info)
@@ -154,7 +154,7 @@ class Fbmsg(object):
                 }
             }
         }
-        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
     def reply_list_template(self, user_id, mode, info):
         elements = self.produce_elements(info)
@@ -176,7 +176,7 @@ class Fbmsg(object):
                 }
             }
         }
-        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data, filter={})
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
     def set_start_button(self):
         data = {
@@ -196,7 +196,7 @@ class Fbmsg(object):
         }
         return self.send(data)
 
-    def broadcast_send(data, filter):
+    def broadcast_send(data):
         cur.execute('SELECT user_id from audience')
         rows = cur.fetchall()
         for row in rows:
@@ -204,4 +204,3 @@ class Fbmsg(object):
             data['recipient']['id'] = row
             self.send(data)
         return  self.reply_text('1727613570586940', 'finished broadcast sending')
-        # return  self.reply_text('1417787291642087', 'finished broadcast sending')

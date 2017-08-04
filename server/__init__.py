@@ -197,7 +197,6 @@ def reply(user_id, mode, info):
 
 @app.route('/', methods=['POST'])
 def handle_incoming_message():
-    global is_broadcast
     data = request.json
     messaging = data['entry'][0]['messaging'][0]
     sender_id = messaging['sender']['id']
@@ -234,23 +233,18 @@ def handle_incoming_message():
     text = messaging['message']['text']
     print('message: ', text)
 
-    """
+    
     # broadcast mode
     if sender_id == '1727613570586940':
-        if text == '!!!' or text == '！！！':
-            is_broadcast = not is_broadcast
-            client.reply_text(sender_id, ModeType.USER_MODE, 'being in broadcast mode' if is_broadcast else 'leaving out broadcast mode')
-            print('is broadcast: ' ,is_broadcast)
-            return 'ok'
-        if is_broadcast:
-            request_token = util.parse_request(text)
+        if text[0] == '!' or text == '！':
+            print(text[1:])
+            request_token = util.parse_request(text[1:])
             if request_token['mode'] in ErrorType:
-                client.reply_text(sender_id, ModeType.BROADCAST_MODE, text)
+                client.reply_text(sender_id, ModeType.BROADCAST_MODE, text[1:])
             else:
                 info = get_info(request_token['token'], request_token['mode'])
                 reply(sender_id, ModeType.BROADCAST_MODE, info)
             return 'ok'
-    """
 
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
