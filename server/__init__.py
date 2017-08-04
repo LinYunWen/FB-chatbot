@@ -231,7 +231,9 @@ def handle_incoming_message():
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         print('error broadcast')
-        client.reply_text(text)
+        if str(sender_id) == '1026383920798666':
+            print('broadcast')
+            reply_text('1727613570586940', text)
         handle_error_request(sender_id, request_token['mode'])
     else:
         info = get_info(request_token['token'], request_token['mode'])
