@@ -214,7 +214,7 @@ def handle_incoming_message():
             client.set_sender_action(sender_id, 'typing_off')
             try:
                 print(data)
-                cur.execute("INSERT INTO audience (id, user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (2, " + sender_id + ", '---', ---, '---', '---', 8, '---')")
+                cur.execute("INSERT INTO audience2 (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', ---, '---', '---', 8, '---')")
                 conn.commit()
             except:
                 return 'ok'
@@ -231,6 +231,7 @@ def handle_incoming_message():
     text = messaging['message']['text']
     print('message: ', text)
 
+    """
     # broadcast mode
     if sender_id == '1727613570586940':
     # if sender_id == '1417787291642087':
@@ -247,8 +248,8 @@ def handle_incoming_message():
                 info = get_info(request_token['token'], request_token['mode'])
                 reply(sender_id, ModeType.BROADCAST_MODE, info)
             return 'ok'
+    """
 
-    print('unique;', is_broadcast)
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         handle_error_request(sender_id, request_token['mode'])
