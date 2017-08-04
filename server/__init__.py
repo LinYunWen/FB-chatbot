@@ -218,6 +218,8 @@ def handle_incoming_message():
                 conn.commit()
             except:
                 print('error on insert data')
+                tb = sys.exc_info()
+                print(tb[1])
                 return 'ok'
             return 'ok'
 
