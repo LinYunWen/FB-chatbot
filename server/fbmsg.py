@@ -1,7 +1,22 @@
 # -*- coding: utf-8 -*-
 
+import os
 import requests
-from server.util import ErrorType, InputType, ResponseType
+import psycopg2
+import urllib.parse
+from server.util import ErrorType, InputType, ResponseType, ModeType
+
+# connect to database
+urllib.parse.uses_netloc.append('postgres')
+url = urllib.parse.urlparse(os.environ['DATABASE_URL'])
+conn = psycopg2.connect(
+    database = url.path[1:],
+    user = url.username,
+    password = url.password,
+    host = url.hostname,
+    port = url.port
+)
+cur = conn.cursor()
 
 
 class Fbmsg(object):
@@ -11,7 +26,7 @@ class Fbmsg(object):
     def send(self, data):
         response = requests.post('https://graph.facebook.com/v2.6/me/messages?access_token=' + self.access_token, json=data)
         print(response.content)
-        return response
+        return response.content
 
     def produce_elements(self, info):
         elements = []
@@ -105,13 +120,12 @@ class Fbmsg(object):
                 return buttons
 
     # reply request
-    def reply_text(self, user_id, message):
+    def reply_text(self, user_id, mode, message):
         data = {
             'recipient': {'id': user_id},
             'message': {'text': message}
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
     def reply_greeting_message(self):
         data = {
@@ -121,7 +135,7 @@ class Fbmsg(object):
             }
         }
 
-    def reply_image_url(self, user_id, image_url):
+    def reply_image_url(self, user_id, mode, image_url):
         data = {
             'recipient': {
                 'id': user_id
@@ -135,10 +149,9 @@ class Fbmsg(object):
                 }
             }
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
-    def reply_generic_template(self, user_id, info):
+    def reply_generic_template(self, user_id, mode, info):
         element = self.produce_elements(info)
         data = {
             'recipient': {
@@ -156,10 +169,9 @@ class Fbmsg(object):
                 }
             }
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
-    def reply_list_template(self, user_id, info):
+    def reply_list_template(self, user_id, mode, info):
         elements = self.produce_elements(info)
         buttons = self.produce_buttons(info, 0)
 
@@ -179,9 +191,7 @@ class Fbmsg(object):
                 }
             }
         }
-
-        response = self.send(data)
-        return response.content
+        return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
     def set_start_button(self):
         data = {
@@ -189,7 +199,7 @@ class Fbmsg(object):
                 'payload': 'first_hand_shack'
             }
         }
-        response = self.send(data)
+        response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token=' + self.access_token, json=data)
         return response.content
 
     def set_sender_action(self, user_id, action):
@@ -199,5 +209,13 @@ class Fbmsg(object):
             },
             'sender_action': action
         }
-        response = self.send(data)
-        return response.content
+        return self.send(data)
+
+    def broadcast_send(self, data):
+        cur.execute('SELECT user_id from audience')
+        rows = cur.fetchall()
+        for row in rows:
+            # print('row: ', row[0])
+            data['recipient']['id'] = row[0]
+            self.send(data)
+        return  self.reply_text('1727613570586940', ModeType.USER_MODE, 'finished broadcast sending')

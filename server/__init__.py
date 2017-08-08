@@ -7,10 +7,13 @@ from flask import Flask, request
 from pymessenger.bot import Bot
 
 from server import util
-from server.util import ErrorType, InputType, ResponseType
+from server.util import ErrorType, InputType, ResponseType, ModeType
+from server import fbmsg
 from server.fbmsg import Fbmsg
 
 app = Flask(__name__)
+
+
 
 # this is a token to match FB fans page
 # Light up
@@ -19,8 +22,11 @@ app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 bot = Bot(ACCESS_TOKEN)
 client = Fbmsg(ACCESS_TOKEN)
+# Init start connection button in dialog
+client.set_start_button()
 
 is_match = False
+is_broadcast = False
 counter = 0
 
 # for verify
@@ -37,14 +43,14 @@ def get_access_token():
 def handle_error_request(user_id, error_type):
     global counter
     if error_type == ErrorType.BAD_INPUT:
-        client.reply_text(user_id, '未設定之指令')
-        client.reply_text(user_id, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+        client.reply_text(user_id, ModeType.USER_MODE, '未設定之指令')
+        client.reply_text(user_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
         #counter = (counter + 1) % 3
         #print('counter: ', counter)
     elif error_type == ErrorType.NO_RESULT:
-        client.reply_text(user_id, '抱歉～沒有尋找到任何資料')
+        client.reply_text(user_id, ModeType.USER_MODE, '抱歉～沒有尋找到任何資料')
     elif error_type == ErrorType.SOMETHING_WRONG:
-        client.reply_text(user_id, '抱歉～有錯誤')
+        client.reply_text(user_id, ModeType.USER_MODE, '抱歉～有錯誤')
 
     return 0
 
@@ -158,19 +164,19 @@ def _get_artist(msg):
 def _get_track(msg):
     return _get_reply(msg, InputType.TRACK, 'none')
 
-def reply(user_id, info):
+def reply(user_id, mode, info):
     if info['mode'] in ErrorType:
         handle_error_request(user_id, info['mode'])
         return 'ok'
 
     if info['response_type'] == ResponseType.SINGLE:
-        client.reply_generic_template(user_id, info)
+        client.reply_generic_template(user_id, mode, info)
     elif info['response_type'] == ResponseType.LIST:
         if info['top_element_style'] == 'compact':
             if info['mode'] == InputType.TRACK or info['mode'] == InputType.ARTIST:
-                client.reply_text(user_id, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
-                set_sender_action(user_id, 'typing_on')
-        client.reply_list_template(user_id, info)
+                client.reply_text(user_id, mode, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
+                client.set_sender_action(user_id, 'typing_on')
+        client.reply_list_template(user_id, mode, info)
     return 'ok'
 
 @app.route('/', methods=['POST'])
@@ -187,32 +193,51 @@ def handle_incoming_message():
     # handle first conversation
     if 'postback' in messaging:
         if messaging['postback']['payload'] == 'first_hand_shack':
-            client.reply_text(sender_id, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+            client.reply_text(sender_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
             client.set_sender_action(sender_id, 'typing_off')
+            try:
+                print('insert new person')
+                print(data)
+                fbmsg.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
+                fbmsg.conn.commit()
+            except:
+                print('error on insert data')
+                tb = sys.exc_info()
+                print(tb[1])
+                return 'ok'
             return 'ok'
 
     # request with not pure text message
     if 'attachments' in messaging['message']:
-        client.reply_text(sender_id, '❤️')
-        client.reply_text(sender_id, '😁')
+        client.reply_text(sender_id, ModeType.USER_MODE, '❤️')
+        client.reply_text(sender_id, ModeType.USER_MODE, '😁')
         client.set_sender_action(sender_id, 'typing_off')
         return 'ok'
 
     # Pure text message
     text = messaging['message']['text']
     print('message: ', text)
+
+    
+    # broadcast mode
+    if sender_id == '1727613570586940':
+        if text[0] == '!' or text == '！':
+            request_token = util.parse_request(text[1:])
+            if request_token['mode'] in ErrorType:
+                client.reply_text(sender_id, ModeType.BROADCAST_MODE, text[1:])
+            else:
+                info = get_info(request_token['token'], request_token['mode'])
+                reply(sender_id, ModeType.BROADCAST_MODE, info)
+            return 'ok'
+
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         handle_error_request(sender_id, request_token['mode'])
     else:
         info = get_info(request_token['token'], request_token['mode'])
-        reply(sender_id, info)
+        reply(sender_id, ModeType.USER_MODE, info)
 
     # set type off
     client.set_sender_action(sender_id, 'typing_off')
     return 'ok'
 
-
-if __name__ == '__main__':
-    client.set_start_button()
-    app.run(debug=True)

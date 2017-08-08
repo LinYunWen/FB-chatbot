@@ -21,6 +21,10 @@ class ErrorType(enum.Enum):
     NO_RESULT = 'no_result'
     SOMETHING_WRONG = 'something_wrong'
 
+class ModeType(enum.Enum):
+    USER_MODE = 'user_mode'
+    BROADCAST_MODE = 'broadcast_mode'
+
 
 def get_summary_total(json):
     # Check if the json has error
