@@ -1,5 +1,6 @@
 import os
 import unittest
+import server.connectDB
 import server
 
 
@@ -10,7 +11,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'url': 'https://event.kkbox.com/content/song/DZvlIxxKM7Esr3l8Gi',
             'title': 'Web page'
         }]
-        info = server._get_track('生生')
+        info = server.getInfo._get_track('生生')
         self.assertEqual(server.client.produce_buttons(info ,0), expect)
 
     def test_produce_buttons_list(self):
@@ -19,7 +20,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'url': 'https://www.kkbox.com/tw/tc/search.php?word=button_not_list',
             'title': 'More'
         }]
-        info = server._get_track('button_not_list')
+        info = server.getInfo._get_track('button_not_list')
         #print(server.client.produce_buttons(info))
         self.assertEqual(server.client.produce_buttons(info, 0), expect)
 
@@ -41,7 +42,7 @@ class FbMsgUtilTest(unittest.TestCase):
                 }
             ]
         }]
-        info = server._get_track('生生')
+        info = server.getInfo._get_track('生生')
         self.assertEqual(server.client.produce_elements(info), expect)
 
     def test_produce_elements_list(self):
@@ -84,32 +85,31 @@ class FbMsgUtilTest(unittest.TestCase):
                 }
             }
         ]
-        info = server._get_track('button_not_list')
+        info = server.getInfo._get_track('button_not_list')
         self.assertEqual(server.client.produce_elements(info), expect)
 
 
 class FbMsgBotTest(unittest.TestCase):
     def setUp(self):
         self.user_id = '10'
-        #server.ACCESS_TOKEN = 'EAAEtsX9w5Q0BAHz42VnrkeSNajWpvJjc8ONCs4plPKlBzoafvDTxTEkVY1gGmTxiDcPKauUVHmACxSoyJ715dwhuvRV78QZCWKrQNnACFevghRzjU33xWYFuwZChpDTsVpnSZCtKmZBayMzOzXFdiWly9OZAJPgjgptYzBZAnivwZDZD'
-
 
     def test_reply_text_work(self):
-        data = server.client.reply_text(self.user_id, 'hello')
+        data = server.client.reply_text(self.user_id, server.util.ModeType.USER_MODE, 'hello')
 
     def test_greeting_message_work(self):
         data = server.client.reply_greeting_message()
 
     def test_reply_image_url_work(self):
-        data = server.client.reply_image_url(self.user_id, 'https://i.imgur.com/OK7XeWs.png')
+        data = server.client.reply_image_url(self.user_id, server.util.ModeType.USER_MODE, 'https://i.imgur.com/OK7XeWs.png')
 
     def test_reply_generic_template_work(self):
-        info = server._get_track('生生')
-        data = server.client.reply_generic_template(self.user_id, info)
+        info = server.getInfo._get_track('生生')
+        data = server.client.reply_generic_template(self.user_id, server.util.ModeType.USER_MODE, info)
     
     def test_reply_list_template_work(self):
-        info = server._get_track('no exactly match')
-        data = server.client.reply_list_template(self.user_id, info)
+        info = server.getInfo._get_track('no exactly match')
+        data = server.client.reply_list_template(self.user_id, server.util.ModeType.USER_MODE, info)
 
-
-    
+class DatabseConnectionTest(unittest.TestCase):
+    def connection_work(self):
+        connectDB.connect_database()

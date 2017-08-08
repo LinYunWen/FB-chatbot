@@ -2,31 +2,27 @@
 
 import os
 import requests
-import psycopg2
-import urllib.parse
+from server.connectDB import db
 from server.util import ErrorType, InputType, ResponseType, ModeType
 
-# connect to database
-urllib.parse.uses_netloc.append('postgres')
-url = urllib.parse.urlparse(os.environ['DATABASE_URL'])
-conn = psycopg2.connect(
-    database = url.path[1:],
-    user = url.username,
-    password = url.password,
-    host = url.hostname,
-    port = url.port
-)
-cur = conn.cursor()
 
 
 class Fbmsg(object):
     def __init__(self, access_token):
         self.access_token = access_token
 
+    # send
     def send(self, data):
         response = requests.post('https://graph.facebook.com/v2.6/me/messages?access_token=' + self.access_token, json=data)
         print(response.content)
         return response.content
+
+    def broadcast_send(self, data):
+        row = db.retrieve_data()
+        for row in rows:
+            data['recipient']['id'] = row[0]
+            self.send(data)
+        return  self.reply_text('1727613570586940', ModeType.USER_MODE, 'finished broadcast sending')
 
     def produce_elements(self, info):
         elements = []
@@ -211,11 +207,4 @@ class Fbmsg(object):
         }
         return self.send(data)
 
-    def broadcast_send(self, data):
-        cur.execute('SELECT user_id from audience')
-        rows = cur.fetchall()
-        for row in rows:
-            # print('row: ', row[0])
-            data['recipient']['id'] = row[0]
-            self.send(data)
-        return  self.reply_text('1727613570586940', ModeType.USER_MODE, 'finished broadcast sending')
+    

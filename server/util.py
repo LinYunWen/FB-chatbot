@@ -80,3 +80,23 @@ def search(inquiry, type, territory):
 
     response = requests.get('https://api.kkbox.com/v1.1/search', params=payload, headers=headers)
     return response.json()
+
+def set_subtitle(type,element):
+    if type.value == 'track':
+        return '{artist}\n{album}'.format(artist=element['album']['artist']['name'], album=element['album']['name'])
+    elif type.value == 'album':
+         return element['artist']['name']
+    elif type.value == 'playlist':
+         return element['description']
+    return ' '
+
+def handle_error_request(bot, user_id, error_type):
+    if error_type == ErrorType.BAD_INPUT:
+        bot.reply_text(user_id, ModeType.USER_MODE, '未設定之指令')
+        bot.reply_text(user_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+    elif error_type == ErrorType.NO_RESULT:
+        bot.reply_text(user_id, ModeType.USER_MODE, '抱歉～沒有尋找到任何資料')
+    elif error_type == ErrorType.SOMETHING_WRONG:
+        bot.reply_text(user_id, ModeType.USER_MODE, '抱歉～有錯誤')
+
+    return 0
