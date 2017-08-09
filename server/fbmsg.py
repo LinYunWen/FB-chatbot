@@ -6,15 +6,13 @@ import requests
 from server.connectDB import db
 from server.util import ErrorType, InputType, ResponseType, ModeType
 
-
-
 class Fbmsg(object):
     def __init__(self, access_token):
         self.access_token = access_token
 
     # send
     def send(self, data):
-        response = requests.post('https://graph.facebook.com/v2.6/me/messages?access_token=' + self.access_token, json=data)
+        response = requests.post('https://graph.facebook.com/v2.6/me/messages?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token), json=data)
         print(response.content)
         return response.content
 
@@ -25,96 +23,64 @@ class Fbmsg(object):
             self.send(data)
         return  self.reply_text('1727613570586940', ModeType.USER_MODE, 'finished broadcast sending')
 
+    def produce_item(self, data, type):
+        if type == InputType.TRACK:
+            webview_type = 'compact'
+        elif type == InputType.ALBUM or type == InputType.PLAYLIST:
+            webview_type = 'tall'
+        elif type == InputType.ARTIST:
+            webview_type = 'full'
+
+        item = {
+            'title': data['title'],
+            'subtitle': data['subtitle'],
+            'image_url': data['widget_image_url'],
+            'default_action': {
+                'type': 'web_url',
+                'url': data['widget_song_url'] if type != InputType.ARTIST else data['web_url'],
+                'webview_height_ratio': webview_type
+            }
+        }
+        return item
+
     def produce_elements(self, info):
         elements = []
-        if info['mode'] == InputType.TRACK:
-            webview_type = 'compact'
-        elif info['mode'] == InputType.ALBUM or info['mode'] == InputType.PLAYLIST or info['mode'] == InputType.ARTIST:
-            webview_type = 'tall'
 
         print('data length:', len(info['data']))
         if info['response_type'] == ResponseType.SINGLE:
             for i in range(0, len(info['data']) if len(info['data']) <= 10 else 10):
-                elements.append({
-                    'title': info['data'][i]['title'],
-                    'subtitle': info['data'][i]['subtitle'],
-                    'image_url': info['data'][i]['widget_image_url'],
-                    'default_action': {
-                        'type': 'web_url',
-                        'url': info['data'][i]['widget_song_url'],
-                        'webview_height_ratio': webview_type
-                    },
-                    'buttons': self.produce_buttons(info, i)
-                })
-            return elements
+                item = self.produce_item(info['data'][i], info['mode'])
+                item['buttons'] = self.produce_buttons(info, i)
+                elements.append(item)
         else:
             if info['top_element_style'] == 'large':
-                elements = [{
-                    'title': info['data'][0]['title'],
-                    'image_url': info['data'][0]['widget_image_url'],
-                    'default_action': {
-                        'type': 'web_url',
-                        'url': info['data'][0]['web_url'],
-                        'webview_height_ratio': 'full'
-                    }
-                }]
-                
+                item = self.produce_item(info['data'][0], InputType.ARTIST)
+                elements = [item]
                 for i in range(1, len(info['data']) if len(info['data']) <= 4 else 4):
-                    elements.append({
-                        'title': info['data'][i]['title'],
-                        'subtitle': info['data'][i]['subtitle'],
-                        'image_url': info['data'][i]['widget_image_url'],
-                        'default_action': {
-                            'type': 'web_url',
-                            'url': info['data'][i]['widget_song_url'],
-                            'webview_height_ratio': 'compact'
-                        }
-                    })
-                return elements
+                    item = self.produce_item(info['data'][i], info['mode'])
+                    elements.append(item)
             else:
-                #for i in range(0, info['num']):
                 for i in range(0, len(info['data']) if len(info['data']) <= 4 else 4):
-                    elements.append({
-                        'title': info['data'][i]['title'],
-                        'subtitle': info['data'][i]['subtitle'],
-                        'image_url': info['data'][i]['widget_image_url'],
-                        'default_action': {
-                            'type': 'web_url',
-                            'url': info['data'][i]['widget_song_url'] if info['mode'] != InputType.ARTIST else info['data'][i]['web_url'],
-                            'webview_height_ratio': webview_type
-                        }
-                    })
-                return elements
+                    item = self.produce_item(info['data'][i], info['mode'])
+                    elements.append(item)
+        print(elements)
+        return elements
 
 
     def produce_buttons(self, info, index):
-        buttons = []
+        buttons = [{
+            'type': 'web_url',
+            'url': info['data'][index]['web_url'],
+            'title': 'Web page'
+        }]
+
         if info['response_type'] == ResponseType.SINGLE:
-            buttons = [
-            {
-                'type': 'element_share'
-            },
-            {
-                'type': 'web_url',
-                'url': info['data'][index]['web_url'],
-                'title': 'Web page'
-            }]
-            return buttons
+            buttons.insert(0, {'type': 'element_share'})
         else:
-            if info['top_element_style'] == 'large':
-                buttons = [{
-                    'type': 'web_url',
-                    'url': info['data'][index]['web_url'],
-                    'title': 'Web page'
-                }]
-                return buttons
-            else:
-                buttons = [{
-                    'type': 'web_url',
-                    'url': 'https://www.kkbox.com/tw/tc/search.php?word=' + info['token'],
-                    'title': 'More'
-                }]
-                return buttons
+            if info['top_element_style'] == 'compact':
+                buttons[0]['url'] = 'https://www.kkbox.com/tw/tc/search.php?word={token}'.format(token=info['token'])
+                buttons[0]['title'] = 'More'
+        return buttons
 
     # reply request
     def reply_text(self, user_id, mode, message):
@@ -196,7 +162,7 @@ class Fbmsg(object):
                 'payload': 'first_hand_shack'
             }
         }
-        response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token=' + self.access_token, json=data)
+        response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token), json=data)
         return response.content
 
     def set_sender_action(self, user_id, action):

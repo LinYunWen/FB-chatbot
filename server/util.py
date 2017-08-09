@@ -36,7 +36,7 @@ def get_summary_total(json):
     return 4 if total > 4 else total
 
 def get_widget_url(id, input_type):
-    return 'https://widget.kkbox.com/v1/?id=' + id + '&type=' + input_type
+    return 'https://widget.kkbox.com/v1/?id={ID}&type={INPUT_TYPE}'.format(ID=id, INPUT_TYPE=input_type)
 
 def parse_request(message):
     result = {'mode': ErrorType.BAD_INPUT, 'token': ''}
@@ -46,7 +46,7 @@ def parse_request(message):
 
     input_type = message[0]
     result['token'] = message[1:]
-    
+
     if input_type == '/' or input_type == '／':
         result['mode'] = InputType.TRACK
     elif input_type == '#' or input_type == '＃':
@@ -55,31 +55,27 @@ def parse_request(message):
         result['mode'] = InputType.PLAYLIST
     elif input_type == '@' or input_type == '＠':
         result['mode'] = InputType.ARTIST
-    
+
     return result
 
 def modify_image_size(url, size):
     index = url.rfind('/')
     if index > 0:
         temp = url[index + 1:]
-        want_size = str(size) + 'x' + str(size) + '.jpg'
-        if temp != want_size:
-            return url[0:index + 1] + want_size
-        else:
-            return url
-    else:
-        return url
+        expect_size = str(size) + 'x' + str(size) + '.jpg'
+        if temp != expect_size:
+            return url[0:index + 1] + expect_size
+    return url
 
 def artist_songs(id, territory):
     headers = {'Authorization': os.environ['AUTHORIZATION']}
-    return requests.get('https://api.kkbox.com/v1.1/artists/' + id + '/top-tracks?territory=' + territory + '&limit=3',
-                        headers=headers).json()
+    return requests.get('https://api.kkbox.com/v1.1/artists/' + id + '/top-tracks?territory=' + territory + '&limit=3', headers=headers).json()
 
 def search(inquiry, type, territory):
     payload = {'q': inquiry, 'type': type, 'territory': territory}
     headers = {'Authorization': os.environ['AUTHORIZATION']}
 
-    response = requests.get('https://api.kkbox.com/v1.1/search', params=payload, headers=headers)
+    response = requests.get('https://api.kkbox.com/v1.1/search',params=payload, headers=headers)
     return response.json()
 
 def set_subtitle(type,element):
@@ -99,5 +95,4 @@ def handle_error_request(bot, user_id, error_type):
         bot.reply_text(user_id, ModeType.USER_MODE, '抱歉～沒有尋找到任何資料')
     elif error_type == ErrorType.SOMETHING_WRONG:
         bot.reply_text(user_id, ModeType.USER_MODE, '抱歉～有錯誤')
-
     return 0

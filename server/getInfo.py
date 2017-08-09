@@ -16,8 +16,12 @@ def matching_result(input, expect):
         if index >= 2:
             expect_pre = expect[:index-1]
             is_match = True if input.lower() == expect_pre.lower() else False
+            print(input.lower(), expect_pre.lower())
+            print('has (', is_match)
     else:
         is_match = True if input.lower() == expect.lower() else False
+        print(input.lower(), expect.lower())
+        print('no (', is_match)
     return is_match
 
 def get_info(msg, info_type):
@@ -86,6 +90,9 @@ def _get_reply(msg, type, id):
         'token': msg,
     }
 
+def _get_track(msg):
+    return _get_reply(msg, InputType.TRACK, 'none')
+
 def _get_album(msg):
     return _get_reply(msg, InputType.ALBUM, 'none')
 
@@ -103,6 +110,3 @@ def _get_artist(msg):
         track_data['data'].insert(0, artist_data)
         data = track_data
     return data
-
-def _get_track(msg):
-    return _get_reply(msg, InputType.TRACK, 'none')

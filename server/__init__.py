@@ -41,6 +41,18 @@ def reply(user_id, mode, info):
         client.reply_list_template(user_id, mode, info)
     return 'ok'
 
+def preprocess(text):
+    request_token = util.parse_request(text)
+    if request_token['mode'] == InputType.BROADCAST_MODE:
+        request_token = util.parse_request(text[1:])
+
+    if request_token['mode'] in ErrorType:
+        util.handle_error_request(client, sender_id, request_token['mode'])
+    else:
+        info = getInfo.get_info(request_token['token'], request_token['mode'])
+        reply(sender_id, ModeType.USER_MODE, info)
+    
+
 @app.route('/', methods=['POST'])
 def handle_incoming_message():
     data = request.json

@@ -47,7 +47,7 @@ class GetReplyInfoTest(unittest.TestCase):
         self.assertEqual(data['response_type'], server.util.ResponseType.LIST)
 
     def test_get_track_should_return_type_list(self):
-        data = server.getInfo._get_track('餓夢')
+        data = server.getInfo._get_track('做夢')
         self.assertEqual(data['response_type'], server.util.ResponseType.LIST)
 
     def test_get_info_return_no_result(self):
