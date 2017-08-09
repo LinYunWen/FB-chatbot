@@ -9,7 +9,6 @@ class ConnectDB:
     conn = None
 
     # connect to database
-    # def connect_database(self):
     def __init__(self):
         urllib.parse.uses_netloc.append('postgres')
         url = urllib.parse.urlparse(os.environ['DATABASE_URL'])

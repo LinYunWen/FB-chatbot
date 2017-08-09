@@ -21,7 +21,7 @@ client.set_start_button()
 # for verify
 @app.route('/', methods=['GET'])
 def handle_verification():
-    if request.args['hub.verify_token'] == 'test_for_verify':
+    if request.args['hub.verify_token'] == os.environ['VERIFY_TOKEN']:
         return request.args['hub.challenge']
     else:
         return 'Wrong Verify Token'
