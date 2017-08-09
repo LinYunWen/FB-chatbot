@@ -16,6 +16,7 @@ app = Flask(__name__)
 
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 client = Fbmsg(ACCESS_TOKEN)
+
 # Init start connection button in dialog
 client.set_start_button()
 
@@ -56,22 +57,12 @@ def handle_incoming_message():
     # handle first conversation
     if 'postback' in messaging:
         if messaging['postback']['payload'] == 'first_hand_shack':
-            client.reply_text(sender_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
-            client.set_sender_action(sender_id, 'typing_off')
-            try:
-                fbmsg.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES (" + sender_id + ", '---', '---', '---', '---', 8, '---')")
-                fbmsg.conn.commit()
-            except:
-                tb = sys.exc_info()
-                print(tb[1])
-                return 'ok'
+            fbmsg.first_hand_shack(sender_id)
             return 'ok'
 
     # request with not pure text message
     if 'attachments' in messaging['message']:
-        client.reply_text(sender_id, ModeType.USER_MODE, '❤️')
-        client.reply_text(sender_id, ModeType.USER_MODE, '😁')
-        client.set_sender_action(sender_id, 'typing_off')
+        fbmsg.recieve_attachment(sender_id)
         return 'ok'
 
     # Pure text message
