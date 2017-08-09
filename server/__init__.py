@@ -57,7 +57,7 @@ def handle_incoming_message():
     # handle first conversation
     if 'postback' in messaging:
         if messaging['postback']['payload'] == 'first_hand_shack':
-            fbmsg.first_hand_shack(sender_id)
+            fbmsg.first_hand_shack(client, sender_id)
             return 'ok'
 
     # request with not pure text message

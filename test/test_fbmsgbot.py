@@ -109,6 +109,9 @@ class FbMsgBotTest(unittest.TestCase):
     def test_reply_list_template_work(self):
         info = server.getInfo._get_track('no exactly match')
         data = server.client.reply_list_template(self.user_id, server.util.ModeType.USER_MODE, info)
+    
+    def test_first_hand_shack_work(self):
+        server.fbmsg.first_hand_shack(self.user_id, server.client)
 
 class DatabseConnectionTest(unittest.TestCase):
     def connection_work(self):

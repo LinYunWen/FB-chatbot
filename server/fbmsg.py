@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys, traceback
 import requests
 from server.connectDB import db
 from server.util import ErrorType, InputType, ResponseType, ModeType
@@ -17,7 +18,7 @@ class Fbmsg(object):
         print(response.content)
         return response.content
 
-    def broadcast_send(self, data):
+    def broadcast_send(se１lf, data):
         row = db.retrieve_data()
         for row in rows:
             data['recipient']['id'] = row[0]
@@ -210,9 +211,9 @@ class Fbmsg(object):
     def get_user_info(id):
         return requests.get('https://graph.facebook.com/v2.6/{USER_ID}?access_token={ACCESS_TOKEN}'.format(USER_ID=id, ACCESS_TOKEN=self.access_token))
 
-def first_hand_shack(id):
-    self.reply_text(id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
-    self.set_sender_action(id, 'typing_off')
+def first_hand_shack(id, bot):
+    bot.reply_text(id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+    bot.set_sender_action(id, 'typing_off')
     try:
         dict = get_user_info(id)
         dict['user_id'] = id
@@ -225,7 +226,7 @@ def first_hand_shack(id):
     return
 
 def recieve_attachment(id):
-    self.reply_text(id, ModeType.USER_MODE, '❤️')
-    self.reply_text(id, ModeType.USER_MODE, '😁')
-    self.set_sender_action(id, 'typing_off')
+    bot.reply_text(id, ModeType.USER_MODE, '❤️')
+    bot.reply_text(id, ModeType.USER_MODE, '😁')
+    bot.set_sender_action(id, 'typing_off')
     return 
