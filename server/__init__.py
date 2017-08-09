@@ -14,9 +14,6 @@ from server.fbmsg import Fbmsg
 
 app = Flask(__name__)
 
-# this is a token to match FB fans page
-# Light up
-# ACCESS_TOKEN = 'EAAEtsX9w5Q0BAHz42VnrkeSNajWpvJjc8ONCs4plPKlBzoafvDTxTEkVY1gGmTxiDcPKauUVHmACxSoyJ715dwhuvRV78QZCWKrQNnACFevghRzjU33xWYFuwZChpDTsVpnSZCtKmZBayMzOzXFdiWly9OZAJPgjgptYzBZAnivwZDZD'
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 client = Fbmsg(ACCESS_TOKEN)
 # Init start connection button in dialog
@@ -81,7 +78,6 @@ def handle_incoming_message():
     text = messaging['message']['text']
     print('message: ', text)
 
-    
     # broadcast mode
     if sender_id == '1727613570586940':
         if text[0] == '!' or text == '！':
@@ -93,6 +89,7 @@ def handle_incoming_message():
                 reply(sender_id, ModeType.BROADCAST_MODE, info)
             return 'ok'
 
+    # user mode
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         util.handle_error_request(client, sender_id, request_token['mode'])
