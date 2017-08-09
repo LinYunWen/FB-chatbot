@@ -9,7 +9,8 @@ class ConnectDB:
     conn = None
 
     # connect to database
-    def connect_database(self):
+    # def connect_database(self):
+    def __init__(self):
         urllib.parse.uses_netloc.append('postgres')
         url = urllib.parse.urlparse(os.environ['DATABASE_URL'])
         self.conn = psycopg2.connect(
@@ -21,9 +22,9 @@ class ConnectDB:
         )
         self.cur = self.conn.cursor()
 
-    def insert_new_row(self, dict):
-        self.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES ('%s', '%s', '%s', '%s', '%s', %d, '%s')" % (dict['user_id'], dict['first_name'], dict['last_name'], dict['profile_pic'], dict['locale'], dict['timezone'], dict['gender']))
-        self.cur.commit()
+    def insert_new_row(self, id, dict):
+        self.cur.execute("INSERT INTO audience (user_id, first_name, last_name, profile_pic, locale, timezone, gender) VALUES ('%s', '%s', '%s', '%s', '%s', %d, '%s')" % (id, dict['first_name'], dict['last_name'], dict['profile_pic'], dict['locale'], dict['timezone'], dict['gender']))
+        self.conn.commit()
     
     def retrieve_data(self):
         cur.execute('SELECT user_id from audience')

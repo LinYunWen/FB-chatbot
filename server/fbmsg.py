@@ -208,24 +208,22 @@ class Fbmsg(object):
         }
         return self.send(data)
 
-    def get_user_info(id):
-        return requests.get('https://graph.facebook.com/v2.6/{USER_ID}?access_token={ACCESS_TOKEN}'.format(USER_ID=id, ACCESS_TOKEN=self.access_token))
+    def get_user_info(self, id):
+        return requests.get('https://graph.facebook.com/v2.6/{USER_ID}?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token={ACCESS_TOKEN}'.format(USER_ID=id, ACCESS_TOKEN=self.access_token)).json()
 
 def first_hand_shack(id, bot):
     bot.reply_text(id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
     bot.set_sender_action(id, 'typing_off')
     try:
-        dict = get_user_info(id)
-        dict['user_id'] = id
-        print(dict)
-        #db.insert_new_row(dict)
+        dict = bot.get_user_info(id)
+        # db.insert_new_row(id, dict)
     except:
         tb = sys.exc_info()
         print(tb[1])
         print(traceback.print_tb(tb[2]))
-    return
+    return dict
 
-def recieve_attachment(id):
+def recieve_attachment(id, bot):
     bot.reply_text(id, ModeType.USER_MODE, '❤️')
     bot.reply_text(id, ModeType.USER_MODE, '😁')
     bot.set_sender_action(id, 'typing_off')

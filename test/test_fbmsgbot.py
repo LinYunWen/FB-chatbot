@@ -88,10 +88,22 @@ class FbMsgUtilTest(unittest.TestCase):
         info = server.getInfo._get_track('button_not_list')
         self.assertEqual(server.client.produce_elements(info), expect)
 
+    def test_get_user_info(self):
+        expect = {
+            'first_name': 'Yun-wen',
+            'last_name': 'Lin',
+            'profile_pic': 'https://scontent.xx.fbcdn.net/v/t1.0-1/13407264_793420647424214_3630625782716408607_n.jpg?oh=69ba27a01d2c378292fe5646ea32eda1&oe=59F511A4',
+            'locale': 'zh_TW',
+            'timezone': 8,
+            'gender': 'male'
+        }
+        data = server.client.get_user_info('1727613570586940')
+        self.assertEqual(data, expect)
+
 
 class FbMsgBotTest(unittest.TestCase):
     def setUp(self):
-        self.user_id = '10'
+        self.user_id = '1727613570586940'
 
     def test_reply_text_work(self):
         data = server.client.reply_text(self.user_id, server.util.ModeType.USER_MODE, 'hello')
@@ -112,6 +124,10 @@ class FbMsgBotTest(unittest.TestCase):
     
     def test_first_hand_shack_work(self):
         server.fbmsg.first_hand_shack(self.user_id, server.client)
+
+    def test_recieve_attachment(self):
+        server.fbmsg.recieve_attachment(self.user_id, server.client)
+
 
 class DatabseConnectionTest(unittest.TestCase):
     def connection_work(self):

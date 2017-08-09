@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import enum
 import requests
 
@@ -70,13 +71,13 @@ def modify_image_size(url, size):
         return url
 
 def artist_songs(id, territory):
-    headers = {'Authorization': 'Bearer FDP48nJQc7DJD9MJtkhVqA=='}
+    headers = {'Authorization': os.environ['AUTHORIZATION']}
     return requests.get('https://api.kkbox.com/v1.1/artists/' + id + '/top-tracks?territory=' + territory + '&limit=3',
                         headers=headers).json()
 
 def search(inquiry, type, territory):
     payload = {'q': inquiry, 'type': type, 'territory': territory}
-    headers = {'Authorization': 'Bearer FDP48nJQc7DJD9MJtkhVqA=='}
+    headers = {'Authorization': os.environ['AUTHORIZATION']}
 
     response = requests.get('https://api.kkbox.com/v1.1/search', params=payload, headers=headers)
     return response.json()

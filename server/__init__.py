@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys, traceback
 import requests
 from flask import Flask, request
 
 import server.getInfo
-from server.connectDB import db
 from server import util
 from server.util import ErrorType, InputType, ResponseType, ModeType
 from server import fbmsg
@@ -62,7 +60,7 @@ def handle_incoming_message():
 
     # request with not pure text message
     if 'attachments' in messaging['message']:
-        fbmsg.recieve_attachment(sender_id)
+        fbmsg.recieve_attachment(sender_id, client)
         return 'ok'
 
     # Pure text message
