@@ -210,7 +210,7 @@ class Fbmsg(object):
     def get_user_info(id):
         return requests.get('https://graph.facebook.com/v2.6/{USER_ID}?access_token={ACCESS_TOKEN}'.format(USER_ID=id, ACCESS_TOKEN=self.access_token))
 
-def frist_hand_shack(id):
+def first_hand_shack(id):
     self.reply_text(id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
     self.set_sender_action(id, 'typing_off')
     try:
