@@ -221,6 +221,7 @@ def frist_hand_shack(id):
     except:
         tb = sys.exc_info()
         print(tb[1])
+        print(traceback.print_tb(tb[2]))
     return
 
 def recieve_attachment(id):
