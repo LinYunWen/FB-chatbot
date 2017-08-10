@@ -41,7 +41,7 @@ def reply(user_id, mode, info):
         client.reply_list_template(user_id, mode, info)
     return 'ok'
 
-def rocess_mode(id, text, mode):
+def process_mode(id, text, mode):
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         if mode == ModeType.BROADCAST_MODE:
