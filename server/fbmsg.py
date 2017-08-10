@@ -185,7 +185,7 @@ class Fbmsg(object):
             }
         }
         response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token))
-        print('home url: ', respose.content)
+        print('home url: ', response.content)
         return response.content
 
     def set_sender_action(self, user_id, action):
