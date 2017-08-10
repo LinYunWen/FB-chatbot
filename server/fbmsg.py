@@ -173,17 +173,20 @@ class Fbmsg(object):
             ]
         }
         response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token))
+        print('white list: ', response.content)
         return response.content
 
     def set_home_url(self):
         data = {
             'home_url' : {
-                'url': 'https://www.facebook.com',
+                'url': 'https://arcane-chamber-93170.herokuapp.com/',
                 'webview_height_ratio': 'tall',
                 'in_test': True
             }
         }
         response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token))
+        print('home url: ', respose.content)
+        return response.content
 
     def set_sender_action(self, user_id, action):
         data = {
