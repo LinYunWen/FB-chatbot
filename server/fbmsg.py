@@ -63,7 +63,7 @@ class Fbmsg(object):
                 for i in range(0, len(info['data']) if len(info['data']) <= 4 else 4):
                     item = self.produce_item(info['data'][i], info['mode'])
                     elements.append(item)
-        print(elements)
+        # print(elements)
         return elements
 
 
@@ -182,7 +182,7 @@ def first_hand_shack(id, bot):
     bot.set_sender_action(id, 'typing_off')
     try:
         dict = bot.get_user_info(id)
-        # db.insert_new_row(id, dict)
+        db.insert_new_row(id, dict)
     except:
         tb = sys.exc_info()
         print(tb[1])

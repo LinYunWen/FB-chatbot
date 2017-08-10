@@ -61,8 +61,8 @@ class ReplyTest(unittest.TestCase):
 
     def test_reply_single_will_work(self):
         info = server.getInfo.get_info('Linkin Park', server.util.InputType.ARTIST)
-        server.reply('', server.util.ModeType.USER_MODE, info)
+        server.reply('1727613570586940', server.util.ModeType.USER_MODE, info)
 
     def test_reply_list_will_work(self):
         info = server.getInfo.get_info('新曲速報', server.util.InputType.PLAYLIST)
-        server.reply('', server.util.ModeType.USER_MODE, info)
+        server.reply('1727613570586940', server.util.ModeType.USER_MODE, info)

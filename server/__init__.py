@@ -41,16 +41,16 @@ def reply(user_id, mode, info):
         client.reply_list_template(user_id, mode, info)
     return 'ok'
 
-def preprocess(text):
+def rocess_mode(id, text, mode):
     request_token = util.parse_request(text)
-    if request_token['mode'] == InputType.BROADCAST_MODE:
-        request_token = util.parse_request(text[1:])
-
     if request_token['mode'] in ErrorType:
-        util.handle_error_request(client, sender_id, request_token['mode'])
+        if mode == ModeType.BROADCAST_MODE:
+            client.reply_text(id, mode, text)
+        else:
+            util.handle_error_request(client, id, request_token['mode'])
     else:
         info = getInfo.get_info(request_token['token'], request_token['mode'])
-        reply(sender_id, ModeType.USER_MODE, info)
+        reply(id, mode, info)
     
 
 @app.route('/', methods=['POST'])
@@ -82,21 +82,11 @@ def handle_incoming_message():
     # broadcast mode
     if sender_id == '1727613570586940':
         if text[0] == '!' or text == '！':
-            request_token = util.parse_request(text[1:])
-            if request_token['mode'] in ErrorType:
-                client.reply_text(sender_id, ModeType.BROADCAST_MODE, text[1:])
-            else:
-                info = getinfo.get_info(request_token['token'], request_token['mode'])
-                reply(sender_id, ModeType.BROADCAST_MODE, info)
+            process_mode(sender_id, text[1:], ModeType.BROADCAST_MODE)
             return 'ok'
 
     # user mode
-    request_token = util.parse_request(text)
-    if request_token['mode'] in ErrorType:
-        util.handle_error_request(client, sender_id, request_token['mode'])
-    else:
-        info = getInfo.get_info(request_token['token'], request_token['mode'])
-        reply(sender_id, ModeType.USER_MODE, info)
+    process_mode(sender_id, text, ModeType.USER_MODE)
 
     # set type off
     client.set_sender_action(sender_id, 'typing_off')

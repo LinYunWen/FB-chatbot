@@ -12,16 +12,18 @@ def matching_result(input, expect):
     is_match = False
 
     index = expect.find('(')
+    space_index = index
     if index >= 0:
         if index >= 2:
             expect_pre = expect[:index-1]
+            while True and len(expect_pre) >= 2:
+                space_index = expect_pre.rfind(' ', 0, space_index-1)
+                if space_index < 0:
+                    break
+                expect_pre = expect_pre[:space_index]
             is_match = True if input.lower() == expect_pre.lower() else False
-            print(input.lower(), expect_pre.lower())
-            print('has (', is_match)
     else:
         is_match = True if input.lower() == expect.lower() else False
-        print(input.lower(), expect.lower())
-        print('no (', is_match)
     return is_match
 
 def get_info(msg, info_type):
