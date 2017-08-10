@@ -17,6 +17,10 @@ client = Fbmsg(ACCESS_TOKEN)
 
 # Init start connection button in dialog
 client.set_start_button()
+# add to white list
+client.add_white_list()
+# set messenger extension
+client.set_home_url()
 
 # for verify
 @app.route('/', methods=['GET'])
