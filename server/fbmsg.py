@@ -181,6 +181,7 @@ class Fbmsg(object):
                 'url': 'https://www.facebook.com',
                 'webview_height_ratio': 'tall',
                 'in_test': True
+            }
         }
         response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token))
 
