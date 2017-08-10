@@ -5,12 +5,17 @@ from server import util
 from server.util import ErrorType, InputType, ResponseType, ModeType
 from server import fbmsg
 
+# global variable for if match search result
 is_match = False
 
 def matching_result(input, expect):
+    # to match retrieved data and user input
+    # @input: the key word which user inputed
+    # @expect: the title got result after searching
     global is_match
     is_match = False
 
+    # discard words after '(' and character ' '
     index = expect.find('(')
     space_index = index
     if index >= 0:
@@ -46,12 +51,17 @@ def get_info(msg, info_type):
     return info
 
 def _get_reply(msg, type, id):
+    # process data before reply
+    # @msg: the key word which user input
+    # @type; InputType
+    # @id: artist id (it will be 'none' if type != InputType.Track after searching artist)
     if type.value == 'track' and id != 'none':
         search_result = util.artist_songs(id, 'TW')
     else:
         search_result = util.search(msg, type.value, 'TW')
     total = util.get_summary_total(search_result)
 
+    # check retrieved data is not empty
     if not total:
         return {'mode': ErrorType.NO_RESULT}
 
@@ -73,7 +83,7 @@ def _get_reply(msg, type, id):
             'web_url': d['url']
         })
 
-        # XXX: WTF? what does this if stmt do?
+        # get match
         if id == 'none' and not is_match and matching_result(msg, title):
             match = data[-1]
             if type.value == 'artist':

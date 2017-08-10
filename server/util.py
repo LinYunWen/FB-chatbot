@@ -11,11 +11,9 @@ class InputType(enum.Enum):
     ARTIST = 'artist'
     INQUERY = 'inquery'
 
-
 class ResponseType(enum.Enum):
     SINGLE = 'single'
     LIST = 'list'
-
 
 class ErrorType(enum.Enum):
     BAD_INPUT = 'bad_input'
@@ -25,7 +23,6 @@ class ErrorType(enum.Enum):
 class ModeType(enum.Enum):
     USER_MODE = 'user_mode'
     BROADCAST_MODE = 'broadcast_mode'
-
 
 def get_summary_total(json):
     # Check if the json has error
@@ -44,9 +41,9 @@ def parse_request(message):
     if not message or len(message) < 2:
         return result
 
+    # parse mode
     input_type = message[0]
     result['token'] = message[1:]
-
     if input_type == '/' or input_type == '／':
         result['mode'] = InputType.TRACK
     elif input_type == '#' or input_type == '＃':
@@ -68,10 +65,17 @@ def modify_image_size(url, size):
     return url
 
 def artist_songs(id, territory):
+    # search for artist's top track
+    # @id: artist id
+    # @territory: TW, HK, SG, MY, JP 
     headers = {'Authorization': os.environ['AUTHORIZATION']}
     return requests.get('https://api.kkbox.com/v1.1/artists/' + id + '/top-tracks?territory=' + territory + '&limit=3', headers=headers).json()
 
 def search(inquiry, type, territory):
+    # search anythings
+    # @inquiry: key word for search
+    # @type: artist, album, track, playlist
+    # @territory: TW, HK, SG, MY, JP 
     payload = {'q': inquiry, 'type': type, 'territory': territory}
     headers = {'Authorization': os.environ['AUTHORIZATION']}
 

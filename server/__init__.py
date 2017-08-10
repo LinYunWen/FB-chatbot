@@ -42,6 +42,10 @@ def reply(user_id, mode, info):
     return 'ok'
 
 def process_mode(id, text, mode):
+    # for which mode for bot to handle
+    # @id: user conversation id
+    # @text: the key words will be search
+    # @mode: ModeType
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         if mode == ModeType.BROADCAST_MODE:
@@ -62,7 +66,6 @@ def handle_incoming_message():
     # set action
     client.set_sender_action(sender_id, 'mark_seen')
     client.set_sender_action(sender_id, 'typing_on')
-    #print(data)
 
     # handle first conversation
     if 'postback' in messaging:

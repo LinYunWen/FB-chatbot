@@ -16,7 +16,8 @@ class Fbmsg(object):
         print(response.content)
         return response.content
 
-    def broadcast_send(se１lf, data):
+    # broadcast send
+    def broadcast_send(self, data):
         row = db.retrieve_data()
         for row in rows:
             data['recipient']['id'] = row[0]
@@ -63,9 +64,7 @@ class Fbmsg(object):
                 for i in range(0, len(info['data']) if len(info['data']) <= 4 else 4):
                     item = self.produce_item(info['data'][i], info['mode'])
                     elements.append(item)
-        # print(elements)
         return elements
-
 
     def produce_buttons(self, info, index):
         buttons = [{
@@ -156,6 +155,7 @@ class Fbmsg(object):
         }
         return self.send(data) if mode == ModeType.USER_MODE else self.broadcast_send(data)
 
+    # set messenger profile 
     def set_start_button(self):
         data = {
             'get_started': {
@@ -178,11 +178,14 @@ class Fbmsg(object):
         return requests.get('https://graph.facebook.com/v2.6/{USER_ID}?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token={ACCESS_TOKEN}'.format(USER_ID=id, ACCESS_TOKEN=self.access_token)).json()
 
 def first_hand_shack(id, bot):
+    # for users first using the bot, will get their user profile data
+    # @id: user conversation id
+    # @bot: Fbmsg object
     bot.reply_text(id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
     bot.set_sender_action(id, 'typing_off')
     try:
         dict = bot.get_user_info(id)
-        db.insert_new_row(id, dict)
+        # db.insert_new_row(id, dict)
     except:
         tb = sys.exc_info()
         print(tb[1])
@@ -190,6 +193,9 @@ def first_hand_shack(id, bot):
     return dict
 
 def recieve_attachment(id, bot):
+    # becouse of just accept text message input, discarding not text message
+    # @id: user conversation id
+    # @bot: Fbmsg object
     bot.reply_text(id, ModeType.USER_MODE, '❤️')
     bot.reply_text(id, ModeType.USER_MODE, '😁')
     bot.set_sender_action(id, 'typing_off')
