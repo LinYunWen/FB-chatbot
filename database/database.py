@@ -4,14 +4,14 @@ import os
 import psycopg2
 import urllib.parse
 
-class ConnectDB:
+class Database:
     cur = None
     conn = None
 
     # connect to database
-    def __init__(self):
+    def __init__(self, database_url):
         urllib.parse.uses_netloc.append('postgres')
-        url = urllib.parse.urlparse(os.environ['DATABASE_URL'])
+        url = urllib.parse.urlparse(database_url)
         self.conn = psycopg2.connect(
             database = url.path[1:],
             user = url.username,
@@ -34,4 +34,4 @@ class ConnectDB:
         rows = cur.fetchall()
         return rows
 
-db = ConnectDB()
+db = Database(os.environ['DATABASE_URL'])

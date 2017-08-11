@@ -4,23 +4,25 @@ import os
 import requests
 from flask import Flask, request
 
-import server.getInfo
+import server.information
 from server import util
 from server.util import ErrorType, InputType, ResponseType, ModeType
-from server import fbmsg
-from server.fbmsg import Fbmsg
+
+import fbmsg.msg_api
+from fbmsg.fbmsg import Bot
+from database.database import db
 
 app = Flask(__name__)
 
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
-client = Fbmsg(ACCESS_TOKEN)
+client = Bot(ACCESS_TOKEN)
 
 # Init start connection button in dialog
-client.set_start_button()
+fbmsg.msg_api.set_start_button(ACCESS_TOKEN)
 # add to white list
-client.add_white_list()
+fbmsg.msg_api.add_white_list(ACCESS_TOKEN)
 # set messenger extension
-client.set_home_url()
+fbmsg.msg_api.set_home_url(ACCESS_TOKEN)
 
 # for verify
 @app.route('/', methods=['GET'])
@@ -57,7 +59,7 @@ def process_mode(id, text, mode):
         else:
             util.handle_error_request(client, id, request_token['mode'])
     else:
-        info = getInfo.get_info(request_token['token'], request_token['mode'])
+        info = information.get_info(request_token['token'], request_token['mode'])
         reply(id, mode, info)
     
 
@@ -74,12 +76,12 @@ def handle_incoming_message():
     # handle first conversation
     if 'postback' in messaging:
         if messaging['postback']['payload'] == 'first_hand_shack':
-            fbmsg.first_hand_shack(sender_id, client)
+            fbmsg.msg_api.first_hand_shack(sender_id, client)
             return 'ok'
 
     # request with not pure text message
     if 'attachments' in messaging['message']:
-        fbmsg.recieve_attachment(sender_id, client)
+        fbmsg.msg_api.recieve_attachment(sender_id, client)
         return 'ok'
 
     # Pure text message

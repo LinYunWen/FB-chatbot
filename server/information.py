@@ -3,7 +3,7 @@
 import sys, traceback
 from server import util
 from server.util import ErrorType, InputType, ResponseType, ModeType
-from server import fbmsg
+import fbmsg
 
 # global variable for if match search result
 is_match = False

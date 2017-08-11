@@ -1,12 +1,12 @@
 import os
 import unittest
-import server.connectDB
 import server
+import fbmsg
 
 
 class FbMsgUtilTest(unittest.TestCase):
     def setUp(self):
-        server.getInfo.is_match = False
+        server.information.is_match = False
 
     def test_produce_buttons_single(self):
         expect = [{
@@ -16,7 +16,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'url': 'https://event.kkbox.com/content/song/DZvlIxxKM7Esr3l8Gi',
             'title': 'Web page'
         }]
-        info = server.getInfo._get_track('生生')
+        info = server.information._get_track('生生')
         self.assertEqual(server.client.produce_buttons(info, 0), expect)
 
     def test_produce_buttons_list(self):
@@ -25,7 +25,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'url': 'https://www.kkbox.com/tw/tc/search.php?word=button_not_list',
             'title': 'More'
         }]
-        info = server.getInfo._get_track('button_not_list')
+        info = server.information._get_track('button_not_list')
         # print(server.client.produce_buttons(info))
         self.assertEqual(server.client.produce_buttons(info, 0), expect)
 
@@ -37,11 +37,12 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': '生生世世愛', 'subtitle': 'Various Artists\n仙劍奇俠傳三 電視原聲帶', 'image_url': 'https://i.kfs.io/album/tw/139215,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=8tKrqGfjsnPsExOKai&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/8tKrqGfjsnPsExOKai', 'title': 'Web page'}]}, {
             'title': '生生世世', 'subtitle': '陳淑樺 (Sarah Chen)\n給淑樺的一封信', 'image_url': 'https://i.kfs.io/album/tw/79501,0v3/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=8maS6lLQJRsanvCbEd&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/8maS6lLQJRsanvCbEd', 'title': 'Web page'}]}, {
             'title': '生生世世', 'subtitle': '陳淑樺 (Sarah Chen)\n情牽淑樺', 'image_url': 'https://i.kfs.io/album/tw/38094,0v3/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=5YDD0u13hYuu1M4h_8&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/5YDD0u13hYuu1M4h_8', 'title': 'Web page'}]}, {
-            'title': '生生不息', 'subtitle': '心靈音樂館\n心靈音樂館 (3CD)', 'image_url': 'https://i.kfs.io/album/tw/311728,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=Cos5F_f9HOVZivtEbb&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/Cos5F_f9HOVZivtEbb', 'title': 'Web page'}]}, {
             'title': '生生世世', 'subtitle': '陳淑樺 (Sarah Chen)\n滾石香港黃金十年-陳淑樺精選', 'image_url': 'https://i.kfs.io/album/global/9487150,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=8sCmOc6dV0ZqnZoaAW&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/8sCmOc6dV0ZqnZoaAW', 'title': 'Web page'}]}, {
+            'title': '生生不息', 'subtitle': '心靈音樂館\n心靈音樂館 (3CD)', 'image_url': 'https://i.kfs.io/album/tw/311728,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=Cos5F_f9HOVZivtEbb&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/Cos5F_f9HOVZivtEbb', 'title': 'Web page'}]}, {
             'title': '生生不息(Pulsating Life)', 'subtitle': 'ASIAN KUNG-FU GENERATION\n到未知的明天(Into an Unseen Tomorrow)', 'image_url': 'https://i.kfs.io/album/tw/106389,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=Gk_p8m7-nSw3Swd93H&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/Gk_p8m7-nSw3Swd93H', 'title': 'Web page'}]}, {
-            'title': '生生不息', 'subtitle': '心靈甦醒\n心靈甦醒-古箏音樂系列 (3CD)', 'image_url': 'https://i.kfs.io/album/tw/311739,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=Kr5TvxRH6Il0DOF65g&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/Kr5TvxRH6Il0DOF65g', 'title': 'Web page'}]}]
-        info = server.getInfo._get_track('生生')
+            'title': '生生不息', 'subtitle': '心靈甦醒\n心靈甦醒-古箏音樂系列 (3CD)', 'image_url': 'https://i.kfs.io/album/tw/311739,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=Kr5TvxRH6Il0DOF65g&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/Kr5TvxRH6Il0DOF65g', 'title': 'Web page'}]
+        }]
+        info = server.information._get_track('生生')
         self.assertEqual(server.client.produce_elements(info), expect)
 
     def test_produce_elements_list(self):
@@ -50,7 +51,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': "Ain't nothing gonna break it", 'subtitle': "Listed-not\nAin't nothing gonna break it (Ain't nothing gonna break it)", 'image_url': 'https://i.kfs.io/album/global/19779662,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=HZ4KZgKiEYKfnyn02i&type=song', 'webview_height_ratio': 'compact'}}, {
             'title': 'Inside Of You', 'subtitle': 'Listed-not\nPROMISED PLACE (PROMISED PLACE)', 'image_url': 'https://i.kfs.io/album/global/4196016,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=GnFLK6nmJNIVIUfPMr&type=song', 'webview_height_ratio': 'compact'}}, {
             'title': 'Until It Arrives', 'subtitle': 'Listed-not\nPROMISED PLACE (PROMISED PLACE)', 'image_url': 'https://i.kfs.io/album/global/4196016,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=0pFTD8JFMinpWQtf64&type=song', 'webview_height_ratio': 'compact'}}]
-        info = server.getInfo._get_track('button_not_list')
+        info = server.information._get_track('button_not_list')
         self.assertEqual(server.client.produce_elements(info), expect)
 
     def test_get_user_info(self):
@@ -62,14 +63,14 @@ class FbMsgUtilTest(unittest.TestCase):
             'timezone': 8,
             'gender': 'male'
         }
-        data = server.client.get_user_info('1727613570586940')
+        data = fbmsg.msg_api.get_user_info(os.environ['ACCESS_TOKEN'], '1727613570586940')
         self.assertEqual(data, expect)
 
 
 class FbMsgBotTest(unittest.TestCase):
     def setUp(self):
-        self.user_id = '1727613570586940'
-        server.getInfo.is_match = False
+        self.user_id = os.environ['ADMIN_ID']
+        server.information.is_match = False
 
     def test_reply_text_work(self):
         data = server.client.reply_text(
@@ -83,27 +84,23 @@ class FbMsgBotTest(unittest.TestCase):
             self.user_id, server.util.ModeType.USER_MODE, 'https://i.imgur.com/OK7XeWs.png')
 
     def test_reply_generic_template_work(self):
-        info = server.getInfo._get_track('生生')
+        info = server.information._get_track('生生')
         data = server.client.reply_generic_template(
             self.user_id, server.util.ModeType.USER_MODE, info)
 
     def test_reply_list_template_large_work(self):
-        info = server.getInfo._get_artist('林俊傑')
+        info = server.information._get_artist('林俊傑')
         data = server.client.reply_list_template(
             self.user_id, server.util.ModeType.USER_MODE, info)
 
     def test_reply_list_template_compact_work(self):
-        info = server.getInfo._get_playlist('下雨')
+        info = server.information._get_playlist('下雨')
         data = server.client.reply_list_template(
             self.user_id, server.util.ModeType.USER_MODE, info)
 
     def test_first_hand_shack_work(self):
-        server.fbmsg.first_hand_shack(self.user_id, server.client)
+        fbmsg.msg_api.first_hand_shack(self.user_id, server.client)
 
     def test_recieve_attachment(self):
-        server.fbmsg.recieve_attachment(self.user_id, server.client)
+        fbmsg.msg_api.recieve_attachment(self.user_id, server.client)
 
-
-class DatabseConnectionTest(unittest.TestCase):
-    def connection_work(self):
-        connectDB.connect_database()
