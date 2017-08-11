@@ -165,6 +165,29 @@ class Fbmsg(object):
         response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token), json=data)
         return response.content
 
+    def add_white_list(self):
+        data = {
+            'whitelisted_domains': [
+                'https://dry-forest-96464.herokuapp.com/',
+                'https://arcane-chamber-93170.herokuapp.com/'
+            ]
+        }
+        response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token))
+        print('white list: ', response.content)
+        return response.content
+
+    def set_home_url(self):
+        data = {
+            'home_url' : {
+                'url': 'https://dry-forest-96464.herokuapp.com/index',
+                'webview_height_ratio': 'tall',
+                'in_test': True
+            }
+        }
+        response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=self.access_token))
+        print('home url: ', response.content)
+        return response.content
+
     def set_sender_action(self, user_id, action):
         data = {
             'recipient': {

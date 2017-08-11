@@ -17,6 +17,10 @@ client = Fbmsg(ACCESS_TOKEN)
 
 # Init start connection button in dialog
 client.set_start_button()
+# add to white list
+client.add_white_list()
+# set messenger extension
+client.set_home_url()
 
 # for verify
 @app.route('/', methods=['GET'])
@@ -83,7 +87,7 @@ def handle_incoming_message():
     print('message: ', text)
 
     # broadcast mode
-    if sender_id == '1727613570586940':
+    if sender_id == str(os.environ['ADMIN_ID']):
         if text[0] == '!' or text == '！':
             process_mode(sender_id, text[1:], ModeType.BROADCAST_MODE)
             return 'ok'
