@@ -87,7 +87,7 @@ def handle_incoming_message():
     print('message: ', text)
 
     # broadcast mode
-    if sender_id == '1727613570586940':
+    if sender_id == str(os.environ['ADMIN_ID']):
         if text[0] == '!' or text == '！':
             process_mode(sender_id, text[1:], ModeType.BROADCAST_MODE)
             return 'ok'
