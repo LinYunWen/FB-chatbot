@@ -22,7 +22,7 @@ class Fbmsg(object):
         for row in rows:
             data['recipient']['id'] = row[0]
             self.send(data)
-        return  self.reply_text('1727613570586940', ModeType.USER_MODE, 'finished broadcast sending')
+        return  self.reply_text(str(os.environ['ADMIN_ID']), ModeType.USER_MODE, 'finished broadcast sending')
 
     def produce_item(self, data, type):
         if type == InputType.TRACK:
