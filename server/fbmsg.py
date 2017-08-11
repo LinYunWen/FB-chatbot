@@ -179,7 +179,7 @@ class Fbmsg(object):
     def set_home_url(self):
         data = {
             'home_url' : {
-                'url': 'https://arcane-chamber-93170.herokuapp.com/',
+                'url': 'https://dry-forest-96464.herokuapp.com/index',
                 'webview_height_ratio': 'tall',
                 'in_test': True
             }
