@@ -2,13 +2,14 @@
 
 import sys, traceback
 import requests
-from server.util import ModeType
+from server.util import ModeType, print_usage
 
-def first_hand_shack(id, bot):
+def first_hand_shack(bot, id):
     # for users first using the bot, will get their user profile data
-    # @id: user conversation id
     # @bot: Fbmsg object
-    bot.reply_text(id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+    # @id: user conversation id
+
+    print_usage(bot, id)
     bot.set_sender_action(id, 'typing_off')
     try:
         dict = get_user_info(bot.access_token, id)
@@ -19,10 +20,11 @@ def first_hand_shack(id, bot):
         print(traceback.print_tb(tb[2]))
     return dict
 
-def recieve_attachment(id, bot):
+def recieve_attachment(bot, id):
     # becouse of just accept text message input, discarding not text message
-    # @id: user conversation id
     # @bot: Fbmsg object
+    # @id: user conversation id
+    
     bot.reply_text(id, ModeType.USER_MODE, '❤️')
     bot.reply_text(id, ModeType.USER_MODE, '😁')
     bot.set_sender_action(id, 'typing_off')
