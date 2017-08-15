@@ -44,8 +44,8 @@ def set_start_button(access_token):
 def add_white_list(access_token):
     data = {
         'whitelisted_domains': [
-            'https://dry-forest-96464.herokuapp.com/',
-            'https://arcane-chamber-93170.herokuapp.com/'
+            'https://dry-forest-96464.herokuapp.com',
+            'https://arcane-chamber-93170.herokuapp.com'
         ]
     }
     response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token))
