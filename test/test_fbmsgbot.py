@@ -58,12 +58,13 @@ class FbMsgUtilTest(unittest.TestCase):
         expect = {
             'first_name': 'Yun-wen',
             'last_name': 'Lin',
-            'profile_pic': 'https://scontent.xx.fbcdn.net/v/t1.0-1/13407264_793420647424214_3630625782716408607_n.jpg?oh=69ba27a01d2c378292fe5646ea32eda1&oe=59F511A4',
+            'profile_pic': 'https://scontent.xx.fbcdn.net/v/t1.0-1/13407264_793420647424214_3630625782716408607_n.jpg?oh=8aeec513d35555a459985b9f93fae557&oe=5A1C9EA4',
             'locale': 'zh_TW',
             'timezone': 8,
             'gender': 'male'
         }
-        data = fbmsg.msg_api.get_user_info(os.environ['ACCESS_TOKEN'], '1727613570586940')
+        data = fbmsg.msg_api.get_user_info(os.environ['ACCESS_TOKEN'], os.environ['ADMIN_ID'])
+        print(data)
         self.assertEqual(data, expect)
 
 
