@@ -62,7 +62,7 @@ def set_home_url(access_token):
     }
     response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token))
     print('home url: ', response.content)
-    print(requests.get('https://graph.facebook.com/v2.6/me/messenger_profile?fields=home_url&access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token)).content)
+    print('get home url: ', requests.get('https://graph.facebook.com/v2.6/me/messenger_profile?fields=home_url&access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token)).content)
     return response.content
 
 def get_user_info(access_token, id):
