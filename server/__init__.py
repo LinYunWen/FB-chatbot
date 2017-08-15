@@ -97,7 +97,7 @@ def handle_incoming_message():
     # user mode
     process_mode(sender_id, text, ModeType.USER_MODE)
 
-    print_usage(bot, sender_id)
+    util.print_usage(bot, sender_id)
     # set type off
     bot.set_sender_action(sender_id, 'typing_off')
     return 'ok'
