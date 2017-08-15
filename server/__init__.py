@@ -45,6 +45,7 @@ def reply(user_id, mode, info):
                 bot.reply_text(user_id, mode, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
                 bot.set_sender_action(user_id, 'typing_on')
         bot.reply_list_template(user_id, mode, info)
+    util.print_usage(bot, uesr_id)
     return 'ok'
 
 def process_mode(id, text, mode):
@@ -97,7 +98,6 @@ def handle_incoming_message():
     # user mode
     process_mode(sender_id, text, ModeType.USER_MODE)
 
-    util.print_usage(bot, sender_id)
     # set type off
     bot.set_sender_action(sender_id, 'typing_off')
     return 'ok'
