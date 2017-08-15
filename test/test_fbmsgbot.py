@@ -17,7 +17,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': 'Web page'
         }]
         info = server.information._get_track('生生')
-        self.assertEqual(server.client.produce_buttons(info, 0), expect)
+        self.assertEqual(server.bot.produce_buttons(info, 0), expect)
 
     def test_produce_buttons_list(self):
         expect = [{
@@ -26,8 +26,8 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': 'More'
         }]
         info = server.information._get_track('button_not_list')
-        # print(server.client.produce_buttons(info))
-        self.assertEqual(server.client.produce_buttons(info, 0), expect)
+        # print(server.bot.produce_buttons(info))
+        self.assertEqual(server.bot.produce_buttons(info, 0), expect)
 
     def test_produce_elements_single(self):
         expect = [{
@@ -43,7 +43,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': '生生不息', 'subtitle': '心靈甦醒\n心靈甦醒-古箏音樂系列 (3CD)', 'image_url': 'https://i.kfs.io/album/tw/311739,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=Kr5TvxRH6Il0DOF65g&type=song', 'webview_height_ratio': 'compact'}, 'buttons': [{'type': 'element_share'}, {'type': 'web_url', 'url': 'https://event.kkbox.com/content/song/Kr5TvxRH6Il0DOF65g', 'title': 'Web page'}]
         }]
         info = server.information._get_track('生生')
-        self.assertEqual(server.client.produce_elements(info), expect)
+        self.assertEqual(server.bot.produce_elements(info), expect)
 
     def test_produce_elements_list(self):
         expect = [{
@@ -52,7 +52,7 @@ class FbMsgUtilTest(unittest.TestCase):
             'title': 'Inside Of You', 'subtitle': 'Listed-not\nPROMISED PLACE (PROMISED PLACE)', 'image_url': 'https://i.kfs.io/album/global/4196016,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=GnFLK6nmJNIVIUfPMr&type=song', 'webview_height_ratio': 'compact'}}, {
             'title': 'Until It Arrives', 'subtitle': 'Listed-not\nPROMISED PLACE (PROMISED PLACE)', 'image_url': 'https://i.kfs.io/album/global/4196016,0v1/fit/1000x1000.jpg', 'default_action': {'type': 'web_url', 'url': 'https://widget.kkbox.com/v1/?id=0pFTD8JFMinpWQtf64&type=song', 'webview_height_ratio': 'compact'}}]
         info = server.information._get_track('button_not_list')
-        self.assertEqual(server.client.produce_elements(info), expect)
+        self.assertEqual(server.bot.produce_elements(info), expect)
 
     def test_get_user_info(self):
         expect = {
@@ -74,34 +74,34 @@ class FbMsgBotTest(unittest.TestCase):
         server.information.is_match = False
 
     def test_reply_text_work(self):
-        data = server.client.reply_text(
+        data = server.bot.reply_text(
             self.user_id, server.util.ModeType.USER_MODE, 'hello')
 
     def test_greeting_message_work(self):
-        data = server.client.reply_greeting_message()
+        data = server.bot.reply_greeting_message()
 
     def test_reply_image_url_work(self):
-        data = server.client.reply_image_url(
+        data = server.bot.reply_image_url(
             self.user_id, server.util.ModeType.USER_MODE, 'https://i.imgur.com/OK7XeWs.png')
 
     def test_reply_generic_template_work(self):
         info = server.information._get_track('生生')
-        data = server.client.reply_generic_template(
+        data = server.bot.reply_generic_template(
             self.user_id, server.util.ModeType.USER_MODE, info)
 
     def test_reply_list_template_large_work(self):
         info = server.information._get_artist('林俊傑')
-        data = server.client.reply_list_template(
+        data = server.bot.reply_list_template(
             self.user_id, server.util.ModeType.USER_MODE, info)
 
     def test_reply_list_template_compact_work(self):
         info = server.information._get_playlist('下雨')
-        data = server.client.reply_list_template(
+        data = server.bot.reply_list_template(
             self.user_id, server.util.ModeType.USER_MODE, info)
 
     def test_first_hand_shack_work(self):
-        fbmsg.msg_api.first_hand_shack(self.user_id, server.client)
+        fbmsg.msg_api.first_hand_shack(server.bot, self.user_id)
 
     def test_recieve_attachment(self):
-        fbmsg.msg_api.recieve_attachment(self.user_id, server.client)
+        fbmsg.msg_api.recieve_attachment(server.bot, self.user_id)
 

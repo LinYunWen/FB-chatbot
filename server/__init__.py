@@ -15,7 +15,7 @@ from database.database import db
 app = Flask(__name__)
 
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
-client = Bot(ACCESS_TOKEN)
+bot = Bot(ACCESS_TOKEN)
 
 # Init start connection button in dialog
 fbmsg.msg_api.set_start_button(ACCESS_TOKEN)
@@ -34,17 +34,17 @@ def handle_verification():
 
 def reply(user_id, mode, info):
     if info['mode'] in ErrorType:
-        util.handle_error_request(client, user_id, info['mode'])
+        util.handle_error_request(bot, user_id, info['mode'])
         return 'ok'
 
     if info['response_type'] == ResponseType.SINGLE:
-        client.reply_generic_template(user_id, mode, info)
+        bot.reply_generic_template(user_id, mode, info)
     elif info['response_type'] == ResponseType.LIST:
         if info['top_element_style'] == 'compact':
             if info['mode'] == InputType.TRACK or info['mode'] == InputType.ARTIST:
-                client.reply_text(user_id, mode, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
-                client.set_sender_action(user_id, 'typing_on')
-        client.reply_list_template(user_id, mode, info)
+                bot.reply_text(user_id, mode, '抱歉~沒有找到完全相同者\n請問是以下選項嗎？')
+                bot.set_sender_action(user_id, 'typing_on')
+        bot.reply_list_template(user_id, mode, info)
     return 'ok'
 
 def process_mode(id, text, mode):
@@ -55,9 +55,9 @@ def process_mode(id, text, mode):
     request_token = util.parse_request(text)
     if request_token['mode'] in ErrorType:
         if mode == ModeType.BROADCAST_MODE:
-            client.reply_text(id, mode, text)
+            bot.reply_text(id, mode, text)
         else:
-            util.handle_error_request(client, id, request_token['mode'])
+            util.handle_error_request(bot, id, request_token['mode'])
     else:
         info = information.get_info(request_token['token'], request_token['mode'])
         reply(id, mode, info)
@@ -70,18 +70,18 @@ def handle_incoming_message():
     sender_id = messaging['sender']['id']
 
     # set action
-    client.set_sender_action(sender_id, 'mark_seen')
-    client.set_sender_action(sender_id, 'typing_on')
+    bot.set_sender_action(sender_id, 'mark_seen')
+    bot.set_sender_action(sender_id, 'typing_on')
 
     # handle first conversation
     if 'postback' in messaging:
         if messaging['postback']['payload'] == 'first_hand_shack':
-            fbmsg.msg_api.first_hand_shack(sender_id, client)
+            fbmsg.msg_api.first_hand_shack(bot, sender_id)
             return 'ok'
 
     # request with not pure text message
     if 'attachments' in messaging['message']:
-        fbmsg.msg_api.recieve_attachment(sender_id, client)
+        fbmsg.msg_api.recieve_attachment(bot, sender_id)
         return 'ok'
 
     # Pure text message
@@ -97,7 +97,8 @@ def handle_incoming_message():
     # user mode
     process_mode(sender_id, text, ModeType.USER_MODE)
 
+    print_usage(bot, sender_id)
     # set type off
-    client.set_sender_action(sender_id, 'typing_off')
+    bot.set_sender_action(sender_id, 'typing_off')
     return 'ok'
 

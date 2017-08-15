@@ -91,10 +91,13 @@ def set_subtitle(type,element):
          return element['description']
     return ' '
 
+def print_usage(bot, user_id):
+    bot.reply_text(user_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+
 def handle_error_request(bot, user_id, error_type):
     if error_type == ErrorType.BAD_INPUT:
         bot.reply_text(user_id, ModeType.USER_MODE, '未設定之指令')
-        bot.reply_text(user_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+        print_usage(bot, user_id)
     elif error_type == ErrorType.NO_RESULT:
         bot.reply_text(user_id, ModeType.USER_MODE, '抱歉～沒有尋找到任何資料')
     elif error_type == ErrorType.SOMETHING_WRONG:
