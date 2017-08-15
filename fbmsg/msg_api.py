@@ -3,6 +3,7 @@
 import sys, traceback
 import requests
 from server.util import ModeType, print_usage
+from database.database import db
 
 def first_hand_shack(bot, id):
     # for users first using the bot, will get their user profile data
@@ -56,11 +57,12 @@ def set_home_url(access_token):
         'home_url' : {
             'url': 'https://dry-forest-96464.herokuapp.com/index',
             'webview_height_ratio': 'tall',
-            'in_test': True
+            'in_test': False
         }
     }
     response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token))
     print('home url: ', response.content)
+    print(requests.get('https://graph.facebook.com/v2.6/me/messenger_profile?fields=home_url&access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token)).content)
     return response.content
 
 def get_user_info(access_token, id):
