@@ -1,5 +1,6 @@
-# Innovation Chatbot
+# Facebook Messenger Chatbot
 This is a messenger bot with KKBOX open API for searching songs, albums, playlist, artist data from KKBOX database
+You can use it for chat with "[Innovation Chatbot](https://www.facebook.com/Innovation-Chatbot-122808158329830)" fans page on facebook
 
 ## Setup
 This project is runnable on Heroku!
