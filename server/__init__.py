@@ -104,4 +104,4 @@ def handle_incoming_message():
 
 @app.route('/index')
 def index():
-    return render_template('chat_extension/index.html')
+    return render_template('../chat_extension/index.html')
