@@ -48,8 +48,9 @@ def add_white_list(access_token):
             'https://arcane-chamber-93170.herokuapp.com'
         ]
     }
-    response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token))
+    response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token), json=data)
     print('white list: ', response.content)
+    print('get white list: ', requests.get('https://graph.facebook.com/v2.6/me/messenger_profile?fields=whitelisted_domains&access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token)))
     return response.content
 
 def set_home_url(access_token):
@@ -57,10 +58,11 @@ def set_home_url(access_token):
         'home_url' : {
             'url': 'https://dry-forest-96464.herokuapp.com/index',
             'webview_height_ratio': 'tall',
-            'in_test': False
+            'webview_share_button': 'show',
+            'in_test': True
         }
     }
-    response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token))
+    response = requests.post('https://graph.facebook.com/v2.6/me/messenger_profile?access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token), json=data)
     print('home url: ', response.content)
     print('get home url: ', requests.get('https://graph.facebook.com/v2.6/me/messenger_profile?fields=home_url&access_token={ACCESS_TOKEN}'.format(ACCESS_TOKEN=access_token)).content)
     return response.content
