@@ -2,7 +2,7 @@
 
 import os
 import requests
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 import server.information
 from server import util
@@ -102,3 +102,6 @@ def handle_incoming_message():
     bot.set_sender_action(sender_id, 'typing_off')
     return 'ok'
 
+@app.route('/index')
+def index():
+    return render_template('index.html')
