@@ -30,8 +30,13 @@ class Database:
     
     def retrieve_data(self):
         # retrieve the user data from DB
-        cur.execute('SELECT user_id from audience')
-        rows = cur.fetchall()
+        self.cur.execute('SELECT user_id from audience')
+        rows = self.cur.fetchall()
         return rows
+
+    def get_locale(self, user_id):
+        self.cur.execute("SELECT locale FROM audience WHERE user_id='{id}';".format(id=user_id))
+        rows = self.cur.fetchall()
+        return rows[0][0]
 
 db = Database(os.environ['DATABASE_URL'])

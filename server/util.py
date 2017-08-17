@@ -3,6 +3,7 @@
 import os
 import enum
 import requests
+from database.database import db
 
 class InputType(enum.Enum):
     TRACK = 'track'
@@ -92,14 +93,22 @@ def set_subtitle(type,element):
     return ' '
 
 def print_usage(bot, user_id):
-    bot.reply_text(user_id, ModeType.USER_MODE, '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"')
+    if db.get_locale(user_id) == 'zh_TW':
+        str = '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"'
+    else:
+        str = 'Please type\"/SONG_NAME\"\nor type\"#ALBUNM_NAME\"\nor type\"$PLAYLIST_NAME\"\nor type\"@ARTIST_NAME\"'
+    bot.reply_text(user_id, ModeType.USER_MODE, str)
 
 def handle_error_request(bot, user_id, error_type):
+    is_zh = True if db.get_locale(user_id) == 'zh_TW' else False
     if error_type == ErrorType.BAD_INPUT:
-        bot.reply_text(user_id, ModeType.USER_MODE, '未設定之指令')
+        str = '未設定之指令' if is_zh else 'Not set command!'
+        bot.reply_text(user_id, ModeType.USER_MODE, str)
         print_usage(bot, user_id)
     elif error_type == ErrorType.NO_RESULT:
-        bot.reply_text(user_id, ModeType.USER_MODE, '抱歉～沒有尋找到任何資料')
+        str = '抱歉～沒有尋找到任何資料' if is_zh else 'Sorry~ no any result for searching!'
+        bot.reply_text(user_id, ModeType.USER_MODE, str)
     elif error_type == ErrorType.SOMETHING_WRONG:
-        bot.reply_text(user_id, ModeType.USER_MODE, '抱歉～有錯誤')
+        str = '抱歉～有錯誤' if is_zh else 'Sorry~ something wrong!'
+        bot.reply_text(user_id, ModeType.USER_MODE, str)
     return 0
