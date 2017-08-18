@@ -10,7 +10,6 @@ def first_hand_shack(bot, id):
     # @bot: Fbmsg object
     # @id: user conversation id
 
-    print_usage(bot, id)
     bot.set_sender_action(id, 'typing_off')
     try:
         dict = get_user_info(bot.access_token, id)
@@ -19,6 +18,7 @@ def first_hand_shack(bot, id):
         tb = sys.exc_info()
         print(tb[1])
         print(traceback.print_tb(tb[2]))
+    print_usage(bot, id)
     return dict
 
 def recieve_attachment(bot, id):
