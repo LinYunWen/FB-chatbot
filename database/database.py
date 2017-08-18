@@ -34,4 +34,13 @@ class Database:
         rows = cur.fetchall()
         return rows
 
+    def get_locale(self, user_id):
+        try:
+            self.cur.execute("SELECT locale FROM audience WHERE user_id='{id}';".format(id=user_id))
+            rows = self.cur.fetchall()
+        except:
+            print('no this user_id')
+            return False
+        return rows[0][0]
+
 db = Database(os.environ['DATABASE_URL'])
