@@ -3,6 +3,7 @@
 import os
 import enum
 import requests
+from database.database import db
 
 class InputType(enum.Enum):
     TRACK = 'track'
