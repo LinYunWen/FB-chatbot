@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <head>
     <title>Innovation Chatbot</title>
+
 </head>
 <body>
-    <div class=page>
+    <div class='page'>
         <h1>in server</h1>
-        <input type='text' value='search'>
+        <input id='search' style='width:100%' type='text' value='search'>
+        <div id='result' ></div>
     </div>
+    <!--
     <script>
         (function(d, s, id){
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -15,5 +18,30 @@
             js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'Messenger'));
-    </script> 
+    </script>
+    -->
+    <script>
+        var searchInput = document.getElementById('search');
+        var displayDiv = document.getElementById('result');
+        searchInput.addEventListener('change', typing());
+
+        function typing() {
+            text = searchInput.value;
+            //console.log('text: ', text);
+            var data = search(text);
+            display(data);
+        }
+        
+        function search(text) {
+            return 'hello';
+        }
+
+        function display(data) {
+            for (var i=0 ; i<10 ; i++) {
+                var node = document.createTextNode('Hello');
+                displayDiv.appendChild(node);
+                document.body.appendChild(node);
+            }
+        }
+        </script>
 </body>
