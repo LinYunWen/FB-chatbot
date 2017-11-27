@@ -76,23 +76,23 @@ start chat with your fans page which set above on the messenger
 
 ### 1. search track
 input ``` /[TRACK_NAME] ```
-![](https://i.imgur.com/s0a0fss.jpg)
-![](https://i.imgur.com/PVyjr10.jpg)
+<img src="https://i.imgur.com/s0a0fss.jpg" width="50%">
+<img src="https://i.imgur.com/PVyjr10.jpg" width="50%">
 
 ### 2. search album
 input ``` #[ALBUM_NAME] ```
-![](https://i.imgur.com/P51z4or.png)
-![](https://i.imgur.com/YqJPnxf.png)
+<img src="https://i.imgur.com/P51z4or.png" width="50%">
+<img src="https://i.imgur.com/YqJPnxf.png" width="50%">
 
 ### 3. search playlist
 input ``` $[PLAYLIST_NAME] ```
-![](https://i.imgur.com/4wGr3lT.jpg)
-![](https://i.imgur.com/ZwaeDQL.png)
+<img src="https://i.imgur.com/4wGr3lT.jpg" width="50%">
+<img src="https://i.imgur.com/ZwaeDQL.png" width="50%">
 
 ### 4. search artist
 input ``` @[ARTIST_NAME] ```
-![](https://i.imgur.com/YlPAYuI.png)
-![](https://i.imgur.com/rPw780i.png)
+<img src="https://i.imgur.com/YlPAYuI.png" width="50%">
+<img src="https://i.imgur.com/rPw780i.png" width="50%">
 
 ### 5. broadcast
 input ``` ![WHAT_YOU_WANT_TO_BROADCAST]```
