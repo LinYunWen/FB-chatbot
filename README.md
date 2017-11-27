@@ -75,22 +75,22 @@ start chat with your fans page which set above on the messenger
 ```
 
 ### 1. search track
-input ``` /[TRACK_NAME] ```
+input ``` /[TRACK_NAME] ```<br>
 <img src="https://i.imgur.com/s0a0fss.jpg" width="50%">
 <img src="https://i.imgur.com/PVyjr10.jpg" width="50%">
 
 ### 2. search album
-input ``` #[ALBUM_NAME] ```
+input ``` #[ALBUM_NAME] ```<br>
 <img src="https://i.imgur.com/P51z4or.png" width="50%">
 <img src="https://i.imgur.com/YqJPnxf.png" width="50%">
 
 ### 3. search playlist
-input ``` $[PLAYLIST_NAME] ```
+input ``` $[PLAYLIST_NAME] ```<br>
 <img src="https://i.imgur.com/4wGr3lT.jpg" width="50%">
 <img src="https://i.imgur.com/ZwaeDQL.png" width="50%">
 
 ### 4. search artist
-input ``` @[ARTIST_NAME] ```
+input ``` @[ARTIST_NAME] ```<br>
 <img src="https://i.imgur.com/YlPAYuI.png" width="50%">
 <img src="https://i.imgur.com/rPw780i.png" width="50%">
 
