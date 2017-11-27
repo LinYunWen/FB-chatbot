@@ -19,6 +19,7 @@ class ResponseType(enum.Enum):
 class ErrorType(enum.Enum):
     BAD_INPUT = 'bad_input'
     NO_RESULT = 'no_result'
+    ERROR_AUTH = "error_auth"
     SOMETHING_WRONG = 'something_wrong'
 
 class ModeType(enum.Enum):
@@ -80,8 +81,17 @@ def search(inquiry, type, territory):
     payload = {'q': inquiry, 'type': type, 'territory': territory}
     headers = {'Authorization': os.environ['AUTHORIZATION']}
 
-    response = requests.get('https://api.kkbox.com/v1.1/search',params=payload, headers=headers)
+    response = requests.get('https://api.kkbox.com/v1.1/search', params=payload, headers=headers)
     return response.json()
+
+def get_access_token():
+    # get access token 
+    payload = {'grant_type': 'client_credentials'}
+    headers = {'Authorization': os.environ['USER_AUTHORIZATION']}
+
+    response = requests.get('https://api.kkbox.com/oauth2/token', params=payload, headers=headers)
+    json = response.json()
+    return json['token_type'] + json['access_token']
 
 def set_subtitle(type,element):
     if type.value == 'track':
