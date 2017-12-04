@@ -92,7 +92,7 @@ def get_access_token():
     response = requests.post('https://account.kkbox.com/oauth2/token', data=payload, headers=headers)
     responseJson = response.json()
     print('get access token: ', responseJson)
-    return responseJson['token_type'] + responseJson['access_token']
+    return responseJson['token_type'] + ' ' + responseJson['access_token']
 
 def update_authorization(token):
     payload = {'AUTHORIZATION': token}

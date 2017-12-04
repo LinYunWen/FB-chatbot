@@ -61,9 +61,10 @@ def _get_reply(msg, type, id):
             search_result = util.artist_songs(id, 'TW')
         else:
             search_result = util.search(msg, type.value, 'TW')
-        
+
+        # in case of AUTHORIZTAION expired
         if 'error' in search_result:
-            if search_result['error']['message'] == "Invalid Authorication":
+            if search_result['error']['message'] == "Invalid Authentication":
                 util.update_authorization(util.get_access_token())
                 continue
         break
