@@ -74,10 +74,6 @@ def handle_incoming_message():
     bot.set_sender_action(sender_id, 'mark_seen')
     bot.set_sender_action(sender_id, 'typing_on')
 
-    print('before auth: ', os.environ['AUTHORICATION'])
-    os.environ['AUTHORICATION'] = util.get_access_token()
-    print('after auth: ', os.environ['AUTHORICATION'])
-
     # handle first conversation
     if 'postback' in messaging:
         if messaging['postback']['payload'] == 'first_hand_shack':
