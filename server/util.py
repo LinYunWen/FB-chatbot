@@ -19,6 +19,7 @@ class ResponseType(enum.Enum):
 class ErrorType(enum.Enum):
     BAD_INPUT = 'bad_input'
     NO_RESULT = 'no_result'
+    ERROR_AUTH = "error_auth"
     SOMETHING_WRONG = 'something_wrong'
 
 class ModeType(enum.Enum):
@@ -80,8 +81,17 @@ def search(inquiry, type, territory):
     payload = {'q': inquiry, 'type': type, 'territory': territory}
     headers = {'Authorization': os.environ['AUTHORIZATION']}
 
-    response = requests.get('https://api.kkbox.com/v1.1/search',params=payload, headers=headers)
+    response = requests.get('https://api.kkbox.com/v1.1/search', params=payload, headers=headers)
     return response.json()
+
+def get_access_token():
+    # get access token 
+    payload = {'grant_type': 'client_credentials'}
+    headers = {'Authorization': os.environ['USER_AUTHORIZATION']}
+
+    response = requests.get('https://api.kkbox.com/oauth2/token', params=payload, headers=headers)
+    json = response.json()
+    return json['token_type'] + json['access_token']
 
 def set_subtitle(type,element):
     if type.value == 'track':
@@ -93,14 +103,14 @@ def set_subtitle(type,element):
     return ' '
 
 def print_usage(bot, user_id):
-    if db.get_locale(user_id) == 'zh_TW':
+    if not db.get_locale(user_id) or db.get_locale(user_id) == 'zh_TW':
         str = '請輸入\"/歌曲名稱\"\n或輸入\"#專輯名稱\"\n或輸入\"$歌單名稱\"\n或輸入\"@歌手名稱\"'
     else:
         str = 'Please type\"/SONG_NAME\"\nor type\"#ALBUNM_NAME\"\nor type\"$PLAYLIST_NAME\"\nor type\"@ARTIST_NAME\"'
     bot.reply_text(user_id, ModeType.USER_MODE, str)
 
 def handle_error_request(bot, user_id, error_type):
-    is_zh = True if db.get_locale(user_id) == 'zh_TW' else False
+    is_zh = True if not db.get_locale(user_id) or db.get_locale(user_id) == 'zh_TW' else False
     if error_type == ErrorType.BAD_INPUT:
         str = '未設定之指令' if is_zh else 'Not set command!'
         bot.reply_text(user_id, ModeType.USER_MODE, str)

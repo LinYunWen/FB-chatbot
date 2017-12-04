@@ -55,10 +55,27 @@ def _get_reply(msg, type, id):
     # @msg: the key word which user input
     # @type; InputType
     # @id: artist id (it will be 'none' if type != InputType.Track after searching artist)
+    '''
+    while True:
+        if type.value == 'track' and id != 'none':
+            search_result = util.artist_songs(id, 'TW')
+        else:
+            search_result = util.search(msg, type.value, 'TW')
+        
+        if not 'error' in search_result:
+            break
+        else:
+            if search_result['message'] == "Invalid Authorication":
+                os.environ['AUTHORIZATION'] = util.get_access_token()
+                continue
+            else:
+                break
+    '''
     if type.value == 'track' and id != 'none':
         search_result = util.artist_songs(id, 'TW')
     else:
         search_result = util.search(msg, type.value, 'TW')
+
     total = util.get_summary_total(search_result)
 
     # check retrieved data is not empty
