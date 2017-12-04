@@ -87,11 +87,19 @@ def search(inquiry, type, territory):
 def get_access_token():
     # get access token 
     payload = {'grant_type': 'client_credentials'}
-    headers = {'Authorization': os.environ['USER_AUTHORIZATION']}
+    headers = {'Authorization': os.environ['USER_AUTHORIZATION'], 'Content-type': 'application/x-www-form-urlencoded'}
 
-    response = requests.get('https://api.kkbox.com/oauth2/token', params=payload, headers=headers)
-    json = response.json()
-    return json['token_type'] + json['access_token']
+    response = requests.post('https://account.kkbox.com/oauth2/token', data=payload, headers=headers)
+    responseJson = response.json()
+    print('get access token: ', responseJson)
+    return responseJson['token_type'] + ' ' + responseJson['access_token']
+
+def update_authorization(token):
+    payload = {'AUTHORIZATION': token}
+    headers = {'Authorization': os.environ['HEROKU_TOKEN'], 'Content-type': 'application/json', 'Accept': 'application/vnd.heroku+json; version=3'}
+
+    response = requests.patch('https://api.heroku.com/apps/{appName}/config-vars'.format(appName=os.environ['HEROKU_APP_NAME']), json=payload, headers=headers)
+    print('update auth: ', response.json())
 
 def set_subtitle(type,element):
     if type.value == 'track':
