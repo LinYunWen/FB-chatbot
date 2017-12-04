@@ -63,7 +63,7 @@ def _get_reply(msg, type, id):
             search_result = util.search(msg, type.value, 'TW')
         
         if 'error' in search_result:
-            if search_result['message'] == "Invalid Authorication":
+            if search_result['error']['message'] == "Invalid Authorication":
                 util.update_authorization(util.get_access_token())
                 continue
         break
