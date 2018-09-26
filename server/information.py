@@ -64,6 +64,7 @@ def _get_reply(msg, type, id):
 
         # in case of AUTHORIZTAION expired
         if 'error' in search_result:
+            print('search result: ', search_result)
             if search_result['error']['message'] == "Invalid Authentication":
                 util.update_authorization(util.get_access_token())
                 continue
